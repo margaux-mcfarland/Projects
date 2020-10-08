@@ -1,5 +1,7 @@
 %% Thermal Model for ARGOS PDR
-
+%models the temperature of air surrounding the rover at various distances
+%from the flame front 
+%10/7/20
 clc;
 clear all;
 close all;

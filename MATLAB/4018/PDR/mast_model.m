@@ -1,6 +1,9 @@
 %% Mast Model (CASE 1: tipping side to side)
+% model the normal force on a rover wheel as the rover tips with varying
+% angles
+%10/7/20
 clc;
-clear all;
+clear;
 close all;
 %% givens
 m_top = linspace(0,5,6); %kg, mass on top of mast
@@ -99,5 +102,5 @@ end
 
 %mark angle where 7cm obstacle would be
 xline(asind(0.07/w_body), '--r');
-legend('Height of Mast = 0m','Mass on Top = 1m', 'Mass on Top = 2m',...
-    'Mass on Top = 3m', 'Mass on Top = 4m', 'Mass on Top = 5m', 'Angle created by 7cm tall obstacle');
+legend('Height of Mast = 0m','Height of Mast = 1m', 'Height of Mast = 2m',...
+    'Height of Mast = 3m', 'Height of Mast = 4m', 'Height of Mast = 5m', 'Angle created by 7cm tall obstacle');
