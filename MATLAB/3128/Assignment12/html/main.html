@@ -1,0 +1,815 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-12-11"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3128 - Assignment 12 - Main</a></li><li><a href="#2">Problem 2</a></li><li><a href="#3">plot case g region - dutch roll mode control and rudder feedback</a></li><li><a href="#4">Plot for Case a - sprial/roll mode control - aileron feedback</a></li><li><a href="#5">find the K values that correspond to this region</a></li><li><a href="#6">ode call</a></li><li><a href="#7">compare with open loop</a></li><li><a href="#8">Functions Called</a></li></ul></div><h2 id="1">ASEN 3128 - Assignment 12 - Main</h2><p>Lateral Dimensional Derivatives / B747-100 dynamics</p><pre class="language-matlab">Author: Margaux McFarland
+Collaborators:
+Date: 12/11/19
+</pre><pre class="codeinput">clc;
+clear;
+close <span class="string">all</span>;
+
+<span class="comment">%B-747 givens (Case II)</span>
+W = 2831737.87; <span class="comment">%N, weight</span>
+g = 9.81; <span class="comment">%N, gravity</span>
+m = W/g; <span class="comment">%kg, mass</span>
+rho = 0.6530; <span class="comment">%air density, kg/m^3</span>
+u0 = 157.886; <span class="comment">%V=u in stability frame, airspeed, m/s</span>
+S = 510; <span class="comment">%planform area, m^2</span>
+b = 59.6433; <span class="comment">%span, m</span>
+theta0 = 0; <span class="comment">%radians</span>
+zeta = deg2rad(-6.8); <span class="comment">%radians</span>
+<span class="comment">%moment of inertias</span>
+Ix = 2.4676e7; <span class="comment">%kg*m^2</span>
+Iy = 4.4878e7;
+Iz = 6.7384e7;
+Izx = 1.3151e6;
+
+<span class="comment">%coefficients from table 6.7</span>
+Cyb = -0.8771;
+Cyp = 0;
+Cyr = 0;
+Clb = -0.2797;
+Clp = -0.3295;
+Clr = 0.304;
+Cnb = 0.1946;
+Cnp = -0.04073;
+Cnr = -0.2737;
+
+<span class="comment">%dimensionalize stability derivates using table 4.5</span>
+Yv = (1/2)*rho*u0*S*Cyb;
+Yp = (1/4)*rho*u0*b*S*Cyp;
+Yr = (1/4)*rho*u0*b*S*Cyr;
+
+Lv = (1/2)*rho*u0*S*b*Clb;
+Lp = (1/4)*rho*u0*b^2*S*Clp;
+Lr = (1/4)*rho*u0*b^2*S*Clr;
+
+Nv = (1/2)*rho*u0*S*b*Cnb;
+Np = (1/4)*rho*u0*b^2*S*Cnp;
+Nr = (1/4)*rho*u0*b^2*S*Cnr;
+
+mat = [Yv Lv Nv; Yp Lp Np; Yr Lr Nr];
+</pre><h2 id="2">Problem 2</h2><pre class="codeinput"><span class="comment">%convert to stability frame</span>
+Yv_s = Yv;
+Yp_s = Yp*cos(zeta);
+Yr_s = Yr*cos(zeta) + Yp*sin(zeta);
+
+Lv_s = Lv*cos(zeta) - Nv*sin(zeta);
+Lp_s = Lp*cos(zeta)^2 - (Lr + Np)*sin(zeta)*cos(zeta) + Nr*sin(zeta)^2;
+Lr_s = Lr*cos(zeta)^2 - (Nr - Lp)*sin(zeta)*cos(zeta) - Np*sin(zeta)^2;
+
+Nv_s = Nv*cos(zeta) + Lv*sin(zeta);
+Np_s = Np*cos(zeta)^2 - (Nr - Lp)*sin(zeta)*cos(zeta) - Lr*sin(zeta)^2;
+Nr_s = Nr*cos(zeta)^2 + (Lr + Np)*sin(zeta)*cos(zeta) + Lp*sin(zeta)^2;
+
+mat2 = [Yv_s Lv_s Nv_s; Yp_s Lp_s Np_s; Yr_s Lr_s Nr_s];
+
+Ix_s = Ix*cos(zeta)^2 + Iz*sin(zeta)^2 + Izx*sin(2*zeta);
+Iz_s = Ix*sin(zeta)^2 + Iz*cos(zeta)^2 - Izx*sin(2*zeta);
+Izx_s = -((1/2)*(Ix - Iz)*sin(2*zeta) + Izx*(sin(zeta)^2 - cos(zeta)^2));
+
+
+<span class="comment">%prime coefficients</span>
+Ix_prime = (Ix_s*Iz_s - Izx_s^2)/Iz_s;
+Iz_prime = (Ix_s*Iz_s - Izx_s^2)/Ix_s;
+Izx_prime = Izx_s/(Ix_s*Iz_s - Izx_s^2);
+
+<span class="comment">%calculate A matrix</span>
+A11 = Yv_s/m;
+A12 = Yp_s/m;
+A13 = (Yr_s/m)-u0;
+A14 = g*cos(theta0);
+A21 = (Lv_s/Ix_prime)+(Izx_prime*Nv_s);
+A22 = (Lp_s/Ix_prime) + (Izx_prime*Np_s);
+A23 = (Lr_s/Ix_prime) + (Izx_prime*Nr_s);
+A24 = 0;
+A31 = (Lv_s*Izx_prime) + (Nv_s/Iz_prime);
+A32 = (Lp_s*Izx_prime) + (Np_s/Iz_prime);
+A33 = (Lr_s*Izx_prime) + (Nr_s/Iz_prime);
+A34 = 0;
+A41 = 0;
+A42 = 1;
+A43 = tan(theta0);
+A44 = 0;
+
+<span class="comment">%A matrix</span>
+A = [A11 A12 A13 A14;<span class="keyword">...</span>
+    A21 A22 A23 A24;<span class="keyword">...</span>
+    A31 A32 A33 A34;<span class="keyword">...</span>
+    A41 A42 A43 A44];
+
+<span class="comment">%non-dimennsional control derivatives (table 7.3)</span>
+Cy_dela = 0;
+Cy_delr = 0.1146;
+Cl_dela = -1.368e-2;
+Cl_delr = 6.976e-3;
+Cn_dela = -1.973e-4;
+Cn_delr = -0.1257;
+
+<span class="comment">%dimensionalize the control derivatives</span>
+Y_dela = Cy_dela*(1/2)*rho*u0^2*S;
+Y_delr = Cy_delr*(1/2)*rho*u0^2*S;
+L_dela = Cl_dela*(1/2)*rho*u0^2*S*b;
+L_delr = Cl_delr*(1/2)*rho*u0^2*S*b;
+N_dela = Cn_dela*(1/2)*rho*u0^2*S*b;
+N_delr = Cn_delr*(1/2)*rho*u0^2*S*b;
+
+mat3 = [ Y_dela L_dela N_dela; Y_delr L_delr N_delr];
+
+<span class="comment">%B matrix</span>
+B11 = Y_dela/m;
+B12 = Y_delr/m;
+B21 = L_dela/Ix_prime + (Izx_prime*N_dela);
+B22 = (L_delr/Ix_prime) + (Izx_prime*N_delr);
+B31 = Izx_prime*L_dela + (N_dela/Iz_prime);
+B32 = (Izx_prime*L_delr) + (N_delr/Iz_prime);
+B41 = 0;
+B42 = 0;
+
+B = [B11 B12; B21 B22; B31 B32; B41 B42];
+
+<span class="comment">%augemented matrix</span>
+A_lat_aug = [A [0 0; 0 0; 0 0; 0 0]; [0 0 sec(theta0) 0 0 0; 1 0 0 0 u0*cos(theta0) 0]];
+B_lat_aug = [B; 0 0; 0 0];
+
+<span class="comment">%pick case g from Assignment 12</span>
+
+<span class="comment">% Part G</span>
+k = 0:0.01:5;
+
+
+<span class="keyword">for</span> i = 1:length(k)
+
+k_mat = [0 0 0 0 0 0;
+    0 0 k(i) 0 0 0];
+A_CL = (A_lat_aug-(B_lat_aug*k_mat));
+
+[evecs_aug1, evals_aug1] = eig(A_CL);
+eigens_aug7a(i,:) = diag(evals_aug1)';
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i = 1:length(k)
+
+k_mat = [0 0 0 0 0 0;
+    0 0 k(i) 0 0 0];
+A_CL = (A_lat_aug+(B_lat_aug*k_mat));
+
+[evecs_aug, evals_aug] = eig(A_CL);
+eigens_aug7b(i,:) = diag(evals_aug)';
+
+<span class="keyword">end</span>
+
+<span class="comment">%also pick case a</span>
+k2 = 0:-0.01:-10; <span class="comment">%positive feedback</span>
+
+<span class="keyword">for</span> i = 1:length(k2)
+
+k_mat = [0 0 0 k2(i) 0 0;
+    0 0 0 0 0 0];
+A_CL = (A_lat_aug-(B_lat_aug*k_mat));
+
+[evecs_aug, evals_aug] = eig(A_CL);
+eigens_aug1b(i,:) = diag(evals_aug)';
+
+<span class="keyword">end</span>
+</pre><h2 id="3">plot case g region - dutch roll mode control and rudder feedback</h2><pre class="codeinput">figure(1)
+<span class="comment">%subplot(1, 2, 1)</span>
+<span class="keyword">for</span> i = 1:6
+scatter(real(eigens_aug7b(:,i)),imag(eigens_aug7b(:,i)),[],k)
+hold <span class="string">on</span>
+<span class="keyword">end</span>
+a = plot(real(eigens_aug7b(1,:)),imag(eigens_aug7b(1,:)),<span class="string">'r*'</span>);
+hold <span class="string">on</span>
+b = plot(real(eigens_aug7b(end,:)),imag(eigens_aug7b(end,:)),<span class="string">'ro'</span>);
+
+legend([a,b],<span class="string">'Min k value'</span>,<span class="string">'Max k value'</span>,<span class="string">'Location'</span>,<span class="string">'NorthWest'</span>)
+title(<span class="string">'Positive Feedback for Case g'</span>)
+xlabel(<span class="string">'Real \lambda'</span>)
+ylabel(<span class="string">'Imaginary \lambda'</span>)
+grid <span class="string">on</span>
+c = colorbar;
+c.Label.String = <span class="string">'k Values'</span>;
+
+
+    <span class="comment">%display boundaries on case g to display where correct eigenvalues can</span>
+    <span class="comment">%be found</span>
+    xlim([-2.5 0]);
+    ylim([-5 5]);
+    xline(-0.025,<span class="string">'--r'</span>,<span class="string">'DisplayName'</span>,<span class="string">'Dutch Roll Mode Boundary'</span>); <span class="comment">% max dutch roll mode based on time constant</span>
+    hold <span class="string">on</span>
+
+    <span class="comment">%calculate eigenvalues for dutch roll mode</span>
+    tau_max = 40; <span class="comment">%second, max time constant for dutch roll mode</span>
+    wn = 1/(tau_max*zeta); <span class="comment">%rad/s</span>
+    zeta = 0.35; <span class="comment">%min damping ratio</span>
+    eig_dutch_1 = -wn*zeta + sqrt((wn*zeta)^2 - wn^2);
+    eig_dutch_2 = -wn*zeta - sqrt((wn*zeta)^2 - wn^2);
+
+    yline(imag(eig_dutch_1),<span class="string">'--r'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+    hold <span class="string">on</span>
+    yline(imag(eig_dutch_2),<span class="string">'--r'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+    hold <span class="string">on</span>
+
+line([0 -10*cosd(69.5)],[0 10*sind(69.5)],<span class="string">'Color'</span>,<span class="string">'red'</span>,<span class="string">'LineStyle'</span>,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+hold <span class="string">on</span>
+line([0 -10*cosd(69.5)],[0 -10*sind(69.5)],<span class="string">'Color'</span>,<span class="string">'red'</span>,<span class="string">'LineStyle'</span>,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+hold <span class="string">on</span>
+<span class="comment">%percent overshoots</span>
+po = 5:5:30;
+<span class="comment">%loop through potential overshoots</span>
+<span class="keyword">for</span> i = 1:length(po)
+    <span class="comment">%calculate corresponding damping ratio</span>
+    damp_overshoot = sqrt((log(po(i)/100).^2)/(pi^2 + (log(po(i)/100)).^2));
+    <span class="comment">%calculate beta</span>
+    beta = acos(damp_overshoot);
+    <span class="comment">%plot line</span>
+    line([0 -10*cos(beta)],[0 10*sin(beta)],<span class="string">'Color'</span>,<span class="string">'yellow'</span>,<span class="string">'LineStyle'</span>,<span class="string">'--'</span>,<span class="string">'DisplayName'</span>,<span class="string">"Overshoot Bound "</span> + i);
+    hold <span class="string">on</span>
+    line([0 -10*cos(beta)],[0 -10*sin(beta)],<span class="string">'Color'</span>,<span class="string">'yellow'</span>,<span class="string">'LineStyle'</span>,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+    hold <span class="string">on</span>
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="4">Plot for Case a - sprial/roll mode control - aileron feedback</h2><pre class="codeinput">figure(2)
+<span class="keyword">for</span> i = 1:6
+scatter(real(eigens_aug1b(:,i)),imag(eigens_aug1b(:,i)),[],k2)
+hold <span class="string">on</span>
+<span class="keyword">end</span>
+a = plot(real(eigens_aug1b(1,:)),imag(eigens_aug1b(1,:)),<span class="string">'r*'</span>);
+hold <span class="string">on</span>
+b = plot(real(eigens_aug1b(end,:)),imag(eigens_aug1b(end,:)),<span class="string">'ro'</span>);
+
+legend([a,b],<span class="string">'Min k value'</span>,<span class="string">'Max k value'</span>,<span class="string">'Location'</span>,<span class="string">'NorthWest'</span>)
+title(<span class="string">'Positive Feedback for Case a'</span>)
+xlabel(<span class="string">'Real \lambda'</span>)
+ylabel(<span class="string">'Imaginary \lambda'</span>)
+grid <span class="string">on</span>
+c = colorbar;
+c.Label.String = <span class="string">'k Values'</span>;
+    hold <span class="string">on</span>
+   xlim([-0.5 0]);
+    hold <span class="string">on</span>
+    xline(-0.04,<span class="string">'--r'</span>,<span class="string">'DisplayName'</span>,<span class="string">'Spiral Mode Boundary'</span>); <span class="comment">% max spiral mode based on time constant</span>
+hold <span class="string">on</span>
+<span class="comment">%loop through potential overshoots</span>
+<span class="keyword">for</span> i = 1:length(po)
+    <span class="comment">%calculate corresponding damping ratio</span>
+    damp_overshoot = sqrt((log(po(i)/100).^2)/(pi^2 + (log(po(i)/100)).^2));
+    <span class="comment">%calculate beta</span>
+    beta = acos(damp_overshoot);
+    <span class="comment">%plot line</span>
+    line([0 -10*cos(beta)],[0 10*sin(beta)],<span class="string">'Color'</span>,<span class="string">'yellow'</span>,<span class="string">'LineStyle'</span>,<span class="string">'--'</span>,<span class="string">'DisplayName'</span>,<span class="string">"Overshoot Bound "</span> + i);
+    hold <span class="string">on</span>
+    line([0 -10*cos(beta)],[0 -10*sin(beta)],<span class="string">'Color'</span>,<span class="string">'yellow'</span>,<span class="string">'LineStyle'</span>,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+    hold <span class="string">on</span>
+<span class="keyword">end</span>
+hold <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <h2 id="5">find the K values that correspond to this region</h2><pre class="codeinput"><span class="comment">%find index for min eigenvalue in region (most negative)</span>
+[row_min, col_min] = find(real(eigens_aug7b) &gt;= -0.025, 1, <span class="string">'last'</span>);
+<span class="comment">%find index for max eigenvalue in region (least negative and real)</span>
+[row_max, col_max] = find(real(eigens_aug7b) == min(real(eigens_aug7b)) .* imag(eigens_aug7b) == 0, 1);
+
+<span class="comment">%possible gain values</span>
+K_possible = k(row_max:row_min)
+</pre><pre class="codeoutput">
+K_possible =
+
+  Columns 1 through 7
+
+         0    0.0100    0.0200    0.0300    0.0400    0.0500    0.0600
+
+  Columns 8 through 14
+
+    0.0700    0.0800    0.0900    0.1000    0.1100    0.1200    0.1300
+
+  Columns 15 through 20
+
+    0.1400    0.1500    0.1600    0.1700    0.1800    0.1900
+
+</pre><h2 id="6">ode call</h2><pre class="codeinput"><span class="comment">%max control deflections</span>
+dela_max = deg2rad(10); <span class="comment">%radians, aileron deflection</span>
+delr_max = deg2rad(10); <span class="comment">%radians, rudder deflection</span>
+
+<span class="comment">%gains</span>
+K1 = -0.04; <span class="comment">%gain on aileron</span>
+K2 = -1.1; <span class="comment">%gain on rudder</span>
+k_mat = [0 0 0 K1 0 0;
+    0 0 K2 0 0 0];
+
+<span class="comment">%label and title strings for each state</span>
+ylabel_str = [<span class="string">"v (m/s)"</span>,<span class="string">"roll rate (rad/s)"</span>, <span class="string">"yaw rate (rad/s)"</span>,<span class="string">"bank (rad)"</span>, <span class="string">"aximuth (rad)"</span>, <span class="string">"side force (N)"</span>];
+
+title_str = [<span class="string">"v vs t"</span>,<span class="string">"p vs t"</span>,<span class="string">"r vs t"</span>,<span class="string">"bank vs t"</span>, <span class="string">"azimuth vs t"</span>, <span class="string">"side force vs time"</span>];
+
+
+<span class="comment">%state_vec = [v; p; r; phi; psi; y];</span>
+    initials = [10; -0.14;0.05;0;0;0];
+    t_span = [0 100]; <span class="comment">%seconds</span>
+    [t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A_lat_aug,B_lat_aug,k_mat),t_span,initials);
+    <span class="comment">%plot</span>
+    figure(3)
+
+    sgtitle(<span class="string">"B747-100: Closed Loop Response"</span>);
+
+    <span class="keyword">for</span> j = 1:6 <span class="comment">%loop through number of lateral states and plot each</span>
+        subplot(2, 3, j);
+        plot(t, state_vec(:,j));
+        xlabel(<span class="string">'Time (s)'</span>);
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid <span class="string">on</span>
+        hold <span class="string">all</span>;
+    <span class="keyword">end</span>
+
+<span class="comment">%plot rudder deflection</span>
+figure(4)
+subplot(1,2,1);
+plot(t, K1.*state_vec(:,4),<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+hold <span class="string">on</span>
+yline(dela_max);
+title(<span class="string">'Aileron Response'</span>);
+legend(<span class="string">'Max Aileron Response Deflection'</span>);
+ylabel(<span class="string">'Aileron Response, radians'</span>);
+xlabel(<span class="string">'Time, seconds'</span>);
+ylim([0 0.2]);
+grid <span class="string">on</span>
+subplot(1,2,2);
+plot(t, K2.*state_vec(:,3),<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+hold <span class="string">on</span>
+yline(delr_max);
+title(<span class="string">'Rudder Response'</span>);
+legend(<span class="string">'Max Rudder Response Deflection'</span>);
+ylabel(<span class="string">'Rudder Response, radians'</span>);
+xlabel(<span class="string">'Time, seconds'</span>);
+grid <span class="string">on</span>
+ylim([0 0.2]);
+</pre><img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <h2 id="7">compare with open loop</h2><pre class="codeinput"><span class="comment">%state_vec = [v; p; r; phi; psi; y];</span>
+    initials = [10; -0.14;0.05;0;0;0];
+    t_span = [0 100]; <span class="comment">%seconds</span>
+    [t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, A_lat_aug),t_span,initials);
+    <span class="comment">%plot</span>
+    figure(5)
+
+    sgtitle(<span class="string">"B747-100: Open Loop Response"</span>);
+
+    <span class="keyword">for</span> j = 1:6 <span class="comment">%loop through number of lateral states and plot each</span>
+        subplot(2, 3, j);
+        plot(t, state_vec(:,j));
+        xlabel(<span class="string">'Time (s)'</span>);
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid <span class="string">on</span>
+        hold <span class="string">all</span>;
+    <span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="main_05.png" alt=""> <h2 id="8">Functions Called</h2><p>The following functions were built and called as apart of this assignment.</p><pre class="language-matlab">
+<span class="keyword">function</span> ydot = g_fun(t,state_vec, A, B, K)
+<span class="comment">%ode function to find the lateral states, with controls and gains </span>
+    <span class="comment">%closed loop</span>
+    ydot = (A-(B*K))*state_vec;
+<span class="keyword">end</span>
+
+</pre><pre class="language-matlab">
+<span class="keyword">function</span> ydot = g_fun2(t,state_vec, A)
+<span class="comment">%ode function to find the lateral states, with controls and gains </span>
+<span class="comment">%open loop</span>
+    ydot = A*state_vec;
+<span class="keyword">end</span>
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3128 - Assignment 12 - Main
+% Lateral Dimensional Derivatives / B747-100 dynamics
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 12/11/19
+
+clc;
+clear;
+close all;
+
+%B-747 givens (Case II)
+W = 2831737.87; %N, weight
+g = 9.81; %N, gravity
+m = W/g; %kg, mass
+rho = 0.6530; %air density, kg/m^3
+u0 = 157.886; %V=u in stability frame, airspeed, m/s
+S = 510; %planform area, m^2
+b = 59.6433; %span, m
+theta0 = 0; %radians
+zeta = deg2rad(-6.8); %radians
+%moment of inertias
+Ix = 2.4676e7; %kg*m^2
+Iy = 4.4878e7;
+Iz = 6.7384e7;
+Izx = 1.3151e6;
+
+%coefficients from table 6.7
+Cyb = -0.8771;
+Cyp = 0;
+Cyr = 0;
+Clb = -0.2797;
+Clp = -0.3295;
+Clr = 0.304;
+Cnb = 0.1946;
+Cnp = -0.04073;
+Cnr = -0.2737;
+
+%dimensionalize stability derivates using table 4.5
+Yv = (1/2)*rho*u0*S*Cyb;
+Yp = (1/4)*rho*u0*b*S*Cyp;
+Yr = (1/4)*rho*u0*b*S*Cyr;
+
+Lv = (1/2)*rho*u0*S*b*Clb;
+Lp = (1/4)*rho*u0*b^2*S*Clp;
+Lr = (1/4)*rho*u0*b^2*S*Clr;
+
+Nv = (1/2)*rho*u0*S*b*Cnb;
+Np = (1/4)*rho*u0*b^2*S*Cnp;
+Nr = (1/4)*rho*u0*b^2*S*Cnr;
+
+mat = [Yv Lv Nv; Yp Lp Np; Yr Lr Nr];
+%% Problem 2
+%convert to stability frame
+Yv_s = Yv;
+Yp_s = Yp*cos(zeta);
+Yr_s = Yr*cos(zeta) + Yp*sin(zeta);
+
+Lv_s = Lv*cos(zeta) - Nv*sin(zeta);
+Lp_s = Lp*cos(zeta)^2 - (Lr + Np)*sin(zeta)*cos(zeta) + Nr*sin(zeta)^2;
+Lr_s = Lr*cos(zeta)^2 - (Nr - Lp)*sin(zeta)*cos(zeta) - Np*sin(zeta)^2;
+
+Nv_s = Nv*cos(zeta) + Lv*sin(zeta);
+Np_s = Np*cos(zeta)^2 - (Nr - Lp)*sin(zeta)*cos(zeta) - Lr*sin(zeta)^2;
+Nr_s = Nr*cos(zeta)^2 + (Lr + Np)*sin(zeta)*cos(zeta) + Lp*sin(zeta)^2;
+
+mat2 = [Yv_s Lv_s Nv_s; Yp_s Lp_s Np_s; Yr_s Lr_s Nr_s];
+
+Ix_s = Ix*cos(zeta)^2 + Iz*sin(zeta)^2 + Izx*sin(2*zeta);
+Iz_s = Ix*sin(zeta)^2 + Iz*cos(zeta)^2 - Izx*sin(2*zeta);
+Izx_s = -((1/2)*(Ix - Iz)*sin(2*zeta) + Izx*(sin(zeta)^2 - cos(zeta)^2));
+
+
+%prime coefficients
+Ix_prime = (Ix_s*Iz_s - Izx_s^2)/Iz_s;
+Iz_prime = (Ix_s*Iz_s - Izx_s^2)/Ix_s;
+Izx_prime = Izx_s/(Ix_s*Iz_s - Izx_s^2);
+
+%calculate A matrix
+A11 = Yv_s/m;
+A12 = Yp_s/m;
+A13 = (Yr_s/m)-u0;
+A14 = g*cos(theta0);
+A21 = (Lv_s/Ix_prime)+(Izx_prime*Nv_s);
+A22 = (Lp_s/Ix_prime) + (Izx_prime*Np_s);
+A23 = (Lr_s/Ix_prime) + (Izx_prime*Nr_s);
+A24 = 0;
+A31 = (Lv_s*Izx_prime) + (Nv_s/Iz_prime);
+A32 = (Lp_s*Izx_prime) + (Np_s/Iz_prime);
+A33 = (Lr_s*Izx_prime) + (Nr_s/Iz_prime);
+A34 = 0;
+A41 = 0;
+A42 = 1;
+A43 = tan(theta0);
+A44 = 0;
+
+%A matrix
+A = [A11 A12 A13 A14;...
+    A21 A22 A23 A24;...
+    A31 A32 A33 A34;...
+    A41 A42 A43 A44];
+
+%non-dimennsional control derivatives (table 7.3)
+Cy_dela = 0;
+Cy_delr = 0.1146;
+Cl_dela = -1.368e-2;
+Cl_delr = 6.976e-3;
+Cn_dela = -1.973e-4;
+Cn_delr = -0.1257;
+
+%dimensionalize the control derivatives
+Y_dela = Cy_dela*(1/2)*rho*u0^2*S;
+Y_delr = Cy_delr*(1/2)*rho*u0^2*S;
+L_dela = Cl_dela*(1/2)*rho*u0^2*S*b;
+L_delr = Cl_delr*(1/2)*rho*u0^2*S*b;
+N_dela = Cn_dela*(1/2)*rho*u0^2*S*b;
+N_delr = Cn_delr*(1/2)*rho*u0^2*S*b;
+
+mat3 = [ Y_dela L_dela N_dela; Y_delr L_delr N_delr];
+
+%B matrix 
+B11 = Y_dela/m;
+B12 = Y_delr/m;
+B21 = L_dela/Ix_prime + (Izx_prime*N_dela);
+B22 = (L_delr/Ix_prime) + (Izx_prime*N_delr);
+B31 = Izx_prime*L_dela + (N_dela/Iz_prime);
+B32 = (Izx_prime*L_delr) + (N_delr/Iz_prime);
+B41 = 0;
+B42 = 0;
+
+B = [B11 B12; B21 B22; B31 B32; B41 B42];
+
+%augemented matrix
+A_lat_aug = [A [0 0; 0 0; 0 0; 0 0]; [0 0 sec(theta0) 0 0 0; 1 0 0 0 u0*cos(theta0) 0]];
+B_lat_aug = [B; 0 0; 0 0]; 
+
+%pick case g from Assignment 12
+ 
+% Part G
+k = 0:0.01:5;
+
+
+for i = 1:length(k)
+    
+k_mat = [0 0 0 0 0 0;
+    0 0 k(i) 0 0 0];
+A_CL = (A_lat_aug-(B_lat_aug*k_mat));
+
+[evecs_aug1, evals_aug1] = eig(A_CL);
+eigens_aug7a(i,:) = diag(evals_aug1)';
+
+end
+
+for i = 1:length(k)
+    
+k_mat = [0 0 0 0 0 0;
+    0 0 k(i) 0 0 0];
+A_CL = (A_lat_aug+(B_lat_aug*k_mat));
+
+[evecs_aug, evals_aug] = eig(A_CL);
+eigens_aug7b(i,:) = diag(evals_aug)';
+
+end
+
+%also pick case a
+k2 = 0:-0.01:-10; %positive feedback
+
+for i = 1:length(k2)
+    
+k_mat = [0 0 0 k2(i) 0 0;
+    0 0 0 0 0 0];
+A_CL = (A_lat_aug-(B_lat_aug*k_mat));
+
+[evecs_aug, evals_aug] = eig(A_CL);
+eigens_aug1b(i,:) = diag(evals_aug)';
+
+end
+%% plot case g region - dutch roll mode control and rudder feedback
+figure(1)
+%subplot(1, 2, 1)
+for i = 1:6
+scatter(real(eigens_aug7b(:,i)),imag(eigens_aug7b(:,i)),[],k)
+hold on
+end
+a = plot(real(eigens_aug7b(1,:)),imag(eigens_aug7b(1,:)),'r*');
+hold on
+b = plot(real(eigens_aug7b(end,:)),imag(eigens_aug7b(end,:)),'ro');
+
+legend([a,b],'Min k value','Max k value','Location','NorthWest')
+title('Positive Feedback for Case g')
+xlabel('Real \lambda')
+ylabel('Imaginary \lambda')
+grid on
+c = colorbar;
+c.Label.String = 'k Values';
+    
+    
+    %display boundaries on case g to display where correct eigenvalues can
+    %be found
+    xlim([-2.5 0]);
+    ylim([-5 5]);
+    xline(-0.025,'REPLACE_WITH_DASH_DASHr','DisplayName','Dutch Roll Mode Boundary'); % max dutch roll mode based on time constant
+    hold on
+    
+    %calculate eigenvalues for dutch roll mode
+    tau_max = 40; %second, max time constant for dutch roll mode
+    wn = 1/(tau_max*zeta); %rad/s
+    zeta = 0.35; %min damping ratio
+    eig_dutch_1 = -wn*zeta + sqrt((wn*zeta)^2 - wn^2);
+    eig_dutch_2 = -wn*zeta - sqrt((wn*zeta)^2 - wn^2);
+    
+    yline(imag(eig_dutch_1),'REPLACE_WITH_DASH_DASHr','HandleVisibility','off');
+    hold on
+    yline(imag(eig_dutch_2),'REPLACE_WITH_DASH_DASHr','HandleVisibility','off');
+    hold on
+    
+line([0 -10*cosd(69.5)],[0 10*sind(69.5)],'Color','red','LineStyle','REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+hold on
+line([0 -10*cosd(69.5)],[0 -10*sind(69.5)],'Color','red','LineStyle','REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+hold on
+%percent overshoots
+po = 5:5:30;
+%loop through potential overshoots 
+for i = 1:length(po)
+    %calculate corresponding damping ratio
+    damp_overshoot = sqrt((log(po(i)/100).^2)/(pi^2 + (log(po(i)/100)).^2));
+    %calculate beta
+    beta = acos(damp_overshoot);
+    %plot line
+    line([0 -10*cos(beta)],[0 10*sin(beta)],'Color','yellow','LineStyle','REPLACE_WITH_DASH_DASH','DisplayName',"Overshoot Bound " + i);
+    hold on
+    line([0 -10*cos(beta)],[0 -10*sin(beta)],'Color','yellow','LineStyle','REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+    hold on
+end
+
+%% Plot for Case a - sprial/roll mode control - aileron feedback
+figure(2)
+for i = 1:6
+scatter(real(eigens_aug1b(:,i)),imag(eigens_aug1b(:,i)),[],k2)
+hold on
+end
+a = plot(real(eigens_aug1b(1,:)),imag(eigens_aug1b(1,:)),'r*');
+hold on
+b = plot(real(eigens_aug1b(end,:)),imag(eigens_aug1b(end,:)),'ro');
+
+legend([a,b],'Min k value','Max k value','Location','NorthWest')
+title('Positive Feedback for Case a')
+xlabel('Real \lambda')
+ylabel('Imaginary \lambda')
+grid on
+c = colorbar;
+c.Label.String = 'k Values';
+    hold on
+   xlim([-0.5 0]);
+    hold on
+    xline(-0.04,'REPLACE_WITH_DASH_DASHr','DisplayName','Spiral Mode Boundary'); % max spiral mode based on time constant
+hold on
+%loop through potential overshoots 
+for i = 1:length(po)
+    %calculate corresponding damping ratio
+    damp_overshoot = sqrt((log(po(i)/100).^2)/(pi^2 + (log(po(i)/100)).^2));
+    %calculate beta
+    beta = acos(damp_overshoot);
+    %plot line
+    line([0 -10*cos(beta)],[0 10*sin(beta)],'Color','yellow','LineStyle','REPLACE_WITH_DASH_DASH','DisplayName',"Overshoot Bound " + i);
+    hold on
+    line([0 -10*cos(beta)],[0 -10*sin(beta)],'Color','yellow','LineStyle','REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+    hold on
+end
+hold on
+
+%% find the K values that correspond to this region
+%find index for min eigenvalue in region (most negative)
+[row_min, col_min] = find(real(eigens_aug7b) >= -0.025, 1, 'last');
+%find index for max eigenvalue in region (least negative and real)
+[row_max, col_max] = find(real(eigens_aug7b) == min(real(eigens_aug7b)) .* imag(eigens_aug7b) == 0, 1);
+
+%possible gain values
+K_possible = k(row_max:row_min)
+
+%% ode call
+
+%max control deflections
+dela_max = deg2rad(10); %radians, aileron deflection
+delr_max = deg2rad(10); %radians, rudder deflection
+
+%gains
+K1 = -0.04; %gain on aileron
+K2 = -1.1; %gain on rudder
+k_mat = [0 0 0 K1 0 0;
+    0 0 K2 0 0 0];
+
+%label and title strings for each state
+ylabel_str = ["v (m/s)","roll rate (rad/s)", "yaw rate (rad/s)","bank (rad)", "aximuth (rad)", "side force (N)"];
+
+title_str = ["v vs t","p vs t","r vs t","bank vs t", "azimuth vs t", "side force vs time"];
+
+
+%state_vec = [v; p; r; phi; psi; y];
+    initials = [10; -0.14;0.05;0;0;0];
+    t_span = [0 100]; %seconds
+    [t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A_lat_aug,B_lat_aug,k_mat),t_span,initials);
+    %plot
+    figure(3)
+    
+    sgtitle("B747-100: Closed Loop Response");
+
+    for j = 1:6 %loop through number of lateral states and plot each
+        subplot(2, 3, j);
+        plot(t, state_vec(:,j));
+        xlabel('Time (s)');
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid on
+        hold all;
+    end
+
+%plot rudder deflection
+figure(4)
+subplot(1,2,1);
+plot(t, K1.*state_vec(:,4),'HandleVisibility','off');
+hold on
+yline(dela_max);
+title('Aileron Response');
+legend('Max Aileron Response Deflection');
+ylabel('Aileron Response, radians');
+xlabel('Time, seconds');
+ylim([0 0.2]);
+grid on
+subplot(1,2,2);
+plot(t, K2.*state_vec(:,3),'HandleVisibility','off');
+hold on
+yline(delr_max);
+title('Rudder Response');
+legend('Max Rudder Response Deflection');
+ylabel('Rudder Response, radians');
+xlabel('Time, seconds');
+grid on
+ylim([0 0.2]);
+
+%% compare with open loop
+
+%state_vec = [v; p; r; phi; psi; y];
+    initials = [10; -0.14;0.05;0;0;0];
+    t_span = [0 100]; %seconds
+    [t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, A_lat_aug),t_span,initials);
+    %plot
+    figure(5)
+    
+    sgtitle("B747-100: Open Loop Response");
+
+    for j = 1:6 %loop through number of lateral states and plot each
+        subplot(2, 3, j);
+        plot(t, state_vec(:,j));
+        xlabel('Time (s)');
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid on
+        hold all;
+    end
+ %% Functions Called
+% The following functions were built and called as apart of this
+% assignment.
+%
+% <include>g_fun.m</include>
+%
+%
+% <include>g_fun2.m</include>
+%
+
+##### SOURCE END #####
+--></body></html>

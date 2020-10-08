@@ -1,0 +1,764 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Matlab_Main_CA2_McFarland_Margaux</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-10"><meta name="DC.source" content="Matlab_Main_CA2_McFarland_Margaux.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3111 - Computational Assignment 02 - Main</a></li><li><a href="#2">make error plots</a></li><li><a href="#3">study changes in 1) chord length 2) angle of attack 3) freestream flow speed</a></li><li><a href="#4">Functions Called</a></li></ul></div><h2 id="1">ASEN 3111 - Computational Assignment 02 - Main</h2><pre>Flow Over Thin Airfoils</pre><pre class="language-matlab">Author: Margaux McFarland
+Collaborators:
+Date: 10/10/19
+</pre><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+
+<span class="comment">%givens</span>
+c = 2; <span class="comment">%m</span>
+alpha = deg2rad(12); <span class="comment">%radians</span>
+V_inf = 68; <span class="comment">% m/s</span>
+p_inf = 101.3e3; <span class="comment">%Pa</span>
+rho_inf = 1.225; <span class="comment">%kg/m^3</span>
+N = 20;
+
+<span class="comment">%plot airfoil flow - with lowish number of vortices</span>
+Plot_Airfoil_Flow(c, alpha, V_inf, p_inf, rho_inf, N);
+
+<span class="comment">%vary number of N vorticies</span>
+<span class="comment">%try very high number to approximate the actual results</span>
+N_high = 1000;
+Plot_Airfoil_Flow(c, alpha, V_inf, p_inf, rho_inf, N_high);
+</pre><pre class="codeoutput">min pressure with 20 vorticies: 62817.684100 Pa
+max velocity with 20 vorticies: 259.715750 m/s
+********************************************
+min pressure with 1000 vorticies: 78559.629783 Pa
+max velocity with 1000 vorticies: 204.330945 m/s
+********************************************
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_01.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_02.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_03.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_04.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_05.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_06.png" alt=""> <h2 id="2">make error plots</h2><pre class="codeinput"><span class="comment">%vector of varying number of vortices</span>
+vort_vec = 0:10:300;
+<span class="keyword">for</span> i = 1:length(vort_vec)
+    [error_V(i),error_P(i)] = calcError(c, alpha, V_inf, p_inf, rho_inf, vort_vec(i));
+<span class="keyword">end</span>
+
+<span class="comment">%find 5% percent error on plots</span>
+index_V = find(error_V &lt;= 0.05,1);
+index_P = find(error_P &lt;= 0.05, 1);
+
+fprintf(<span class="string">'The number of vortices requires to get &lt;=5 percent error in Velocity: %f\n'</span>, vort_vec(index_V));
+fprintf(<span class="string">'The number of vortices requires to get &lt;=5 percent error in Pressure: %f\n'</span>, vort_vec(index_P));
+fprintf(<span class="string">'********************************************\n'</span>);
+
+figure
+plot(vort_vec, error_V);
+hold <span class="string">on</span>
+yline(0.05, <span class="string">'r--'</span>);
+xlabel(<span class="string">'Number of Vortices'</span>);
+ylabel(<span class="string">'Error'</span>);
+title(<span class="string">'Error in Velocity vs Number of vorticies'</span>);
+legend(<span class="string">'error curve'</span>,<span class="string">'5 percent error line'</span>);
+figure
+plot(vort_vec, error_P);
+hold <span class="string">on</span>
+yline(0.05, <span class="string">'r--'</span>);
+xlabel(<span class="string">'Number of Vortices'</span>);
+ylabel(<span class="string">'Error'</span>);
+title(<span class="string">'Error in Pressure vs Number of vorticies'</span>);
+legend(<span class="string">'error curve'</span>,<span class="string">'5 percent error line'</span>);
+</pre><pre class="codeoutput">The number of vortices requires to get &lt;=5 percent error in Velocity: 50.000000
+The number of vortices requires to get &lt;=5 percent error in Pressure: 0.000000
+********************************************
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_07.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_08.png" alt=""> <h2 id="3">study changes in 1) chord length 2) angle of attack 3) freestream flow speed</h2><pre class="codeinput"><span class="comment">%vectors of varying values</span>
+chords = linspace(1,10,5);
+alphas = linspace(0, pi/2, 5);
+speeds = linspace(1,100,5);
+N = 50; <span class="comment">% determined to be accurate enough from above</span>
+
+<span class="comment">%plot these variations</span>
+Plot_Airfoil_Flow_variations(chords, alphas, speeds, p_inf, rho_inf, N);
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_09.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_10.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA2_McFarland_Margaux_11.png" alt=""> <h2 id="4">Functions Called</h2><p>The following functions were built and called as apart of this assignment.</p><pre class="language-matlab">
+<span class="keyword">function</span> Plot_Airfoil_Flow(c,alpha,V_inf,p_inf,rho_inf,N)
+<span class="comment">%Plot_Airfoil_Flow plot the flow over an airfoil</span>
+<span class="comment">%   This function plots the streamlines, equipotential lines, and pressure </span>
+<span class="comment">%   contours for flow about a thin airfoil using approximation.</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators: </span>
+<span class="comment">%   Date: 10/10/19</span>
+
+<span class="comment">%% Define Domain</span>
+xmin=-1;
+xmax=3;
+ymin=-2;
+ymax=1.5;
+
+<span class="comment">% Define Number of Grid Points</span>
+nx=100; <span class="comment">% steps in the x direction</span>
+ny=100; <span class="comment">% steps in the y direction</span>
+
+<span class="comment">% Create mesh over domain using number of grid points specified</span>
+[x,y]=meshgrid(linspace(xmin,xmax,nx),linspace(ymin,ymax,ny));
+
+<span class="comment">%% Streamlines</span>
+
+<span class="comment">%sum up discretized strenghts</span>
+dx = c/N;
+x_c = dx/2:dx:c-dx/2;
+<span class="comment">%strength</span>
+Gamma = 2.*alpha.*V_inf.*sqrt((1-(x_c./c))./(x_c./c)).*dx;
+xGamma = x_c;  <span class="comment">% location of vortex</span>
+yGamma = 0;
+
+<span class="comment">% Define a function which calculates the radius.</span>
+<span class="comment">% Center of circle = (x1,y1)</span>
+radius= @(x,y,x1,y1) sqrt((x-x1).^2+(y-y1).^2);
+
+<span class="comment">% Calculate psi for uniform stream (Eq. 3.55; pg. 310)</span>
+Psi_U0 = (V_inf.*y.*cos(alpha) - V_inf.*x.*sin(alpha));
+
+<span class="comment">% Calculate psi for vortex (Eq. 3.114; pg. 310)</span>
+Psi_Gamma = 0;
+<span class="comment">% sum up each stream function (superposition)</span>
+<span class="keyword">for</span> i = 1:length(x_c)
+    Psi_Gamma = Psi_Gamma + Gamma(i)/(2*pi)*log(radius(x,y,xGamma(i),yGamma));
+<span class="keyword">end</span>
+<span class="comment">% Add all streamfunctions together</span>
+StreamFunction = Psi_U0 + Psi_Gamma; <span class="comment">%Psi_U0</span>
+<span class="comment">% Determine color levels for contours</span>
+levmin = StreamFunction(1,nx); <span class="comment">% defines the color levels -&gt; trial and error to find a good representation</span>
+levmax = StreamFunction(ny,nx/2);
+levels = linspace(levmin,levmax,50)';
+
+<span class="comment">% Plot streamfunction at levels</span>
+figure
+contourf(x,y,StreamFunction, 60);
+hold <span class="string">on</span>
+plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+<span class="comment">% Adjust axis and label figure</span>
+axis <span class="string">equal</span>
+axis([xmin xmax ymin ymax])
+ylabel(<span class="string">'y'</span>)
+xlabel(<span class="string">'x'</span>)
+title(<span class="string">"Streamlines: N = "</span> + N + <span class="string">" vortices"</span>);
+
+<span class="comment">%% Equipotentials</span>
+
+<span class="comment">%potential for uniform flow</span>
+Phi_U = (V_inf.*y.*sin(alpha) - V_inf.*x.*cos(alpha));
+
+<span class="comment">%potential for vortices</span>
+Phi_Gamma = 0;
+<span class="comment">% sum up each stream function (superposition)</span>
+<span class="keyword">for</span> i = 1:length(x_c)
+    theta = atan2(y,x-x_c(i));
+    Phi_Gamma = Phi_Gamma + -Gamma(i)/(2*pi)*theta;
+<span class="keyword">end</span>
+
+<span class="comment">%add potential together</span>
+Equipotentials = Phi_U + Phi_Gamma;
+
+<span class="comment">% Plot equipotentials</span>
+figure
+contourf(x,y,Equipotentials, 60);
+colorbar
+hold <span class="string">on</span>
+plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+<span class="comment">% Adjust axis and label figure</span>
+axis <span class="string">equal</span>
+axis([xmin xmax ymin ymax])
+ylabel(<span class="string">'y'</span>)
+xlabel(<span class="string">'x'</span>)
+title(<span class="string">"Equipotentials: N = "</span> + N + <span class="string">" vortices"</span>);
+
+
+<span class="comment">%% Pressure Contours</span>
+
+<span class="comment">%get components of velocity - uniform</span>
+u_U = V_inf*cos(alpha);
+v_U = V_inf*sin(alpha);
+
+<span class="comment">%get components of velocity - vortex</span>
+V_r_Gamma = 0;
+V_theta_Gamma_x = 0;
+V_theta_Gamma_y = 0;
+<span class="keyword">for</span> i = 1:length(x_c)
+    theta = atan2(y,x-x_c(i));
+    V_theta_Gamma_x =  V_theta_Gamma_x + (Gamma(i)./(2.*pi.*radius(x,y,xGamma(i),yGamma)).*sin(theta));
+    V_theta_Gamma_y =  V_theta_Gamma_y + (-Gamma(i)./(2.*pi.*radius(x,y,xGamma(i),yGamma)).*cos(theta));
+<span class="keyword">end</span>
+
+<span class="comment">%add components and get magnitude</span>
+V = sqrt((u_U + V_r_Gamma+ V_theta_Gamma_x).^2 + (v_U + V_theta_Gamma_y).^2);
+
+<span class="comment">%pressure coefficient</span>
+cp = 1 - (V./V_inf).^2;
+<span class="comment">%dynamic pressure</span>
+q_inf = (1/2)*rho_inf*V_inf^2;
+P = cp.*q_inf + p_inf;
+
+<span class="comment">% Plot pressure contours</span>
+figure
+contourf(x,y,P, 60);
+col = colorbar;
+col.Label.String = <span class="string">'Pressure (Pa)'</span>;
+hold <span class="string">on</span>
+plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+<span class="comment">% Adjust axis and label figure</span>
+axis <span class="string">equal</span>
+axis([xmin xmax ymin ymax])
+ylabel(<span class="string">'y'</span>)
+xlabel(<span class="string">'x'</span>)
+title(<span class="string">"Pressure Contours: N = "</span> + N + <span class="string">" vortices"</span>);
+fprintf(<span class="string">"min pressure with %d vorticies: %f Pa\n"</span>,N,min(min(P)));
+fprintf(<span class="string">"max velocity with %d vorticies: %f m/s\n"</span>,N,max(max(V)));
+fprintf(<span class="string">'********************************************\n'</span>);
+<span class="keyword">end</span>
+
+</pre><pre class="language-matlab">
+<span class="keyword">function</span> [error_V, error_P] = calcError(c,alpha,V_inf,p_inf,rho_inf,N)
+<span class="comment">%calcError calculates the error of Pressure and Velocity with a given N</span>
+<span class="comment">%   This function takes in a number of vortices (N vector) and calculates the max velocity</span>
+<span class="comment">%   and max pressure of the flow and compares it to the actual value which</span>
+<span class="comment">%   is estimated using a large number of voritices. The function then</span>
+<span class="comment">%   returns that error </span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators: </span>
+<span class="comment">%   Date: 10/10/19</span>
+
+<span class="comment">%% get estimates values</span>
+<span class="comment">% Define Domain</span>
+xmin=-1;
+xmax=3;
+ymin=-2;
+ymax=1.5;
+
+<span class="comment">% Define Number of Grid Points</span>
+nx=100; <span class="comment">% steps in the x direction</span>
+ny=100; <span class="comment">% steps in the y direction</span>
+
+<span class="comment">% Create mesh over domain using number of grid points specified</span>
+[x,y]=meshgrid(linspace(xmin,xmax,nx),linspace(ymin,ymax,ny));
+
+<span class="comment">%sum up discretized strenghts</span>
+dx = c/N;
+x_c = dx/2:dx:c-dx/2;
+
+<span class="comment">%strength</span>
+Gamma = 2.*alpha.*V_inf.*sqrt((1-(x_c./c))./(x_c./c)).*dx;
+xGamma = x_c;  <span class="comment">% location of vortex</span>
+yGamma = 0;
+
+<span class="comment">% Define a function which calculates the radius.</span>
+<span class="comment">% Center of circle = (x1,y1)</span>
+radius= @(x,y,x1,y1) sqrt((x-x1).^2+(y-y1).^2);
+
+<span class="comment">% Calculate psi for uniform stream (Eq. 3.55; pg. 310)</span>
+Psi_U0 = (V_inf.*y.*cos(alpha) - V_inf.*x.*sin(alpha));
+
+<span class="comment">%get components of velocity - uniform</span>
+u_U = V_inf*cos(alpha);
+v_U = V_inf*sin(alpha);
+
+<span class="comment">%get components of velocity - vortex</span>
+V_r_Gamma = 0;
+V_theta_Gamma_x = 0;
+V_theta_Gamma_y = 0;
+<span class="keyword">for</span> i = 1:length(x_c)
+    theta = atan2(y,x-x_c(i));
+    V_theta_Gamma_x =  V_theta_Gamma_x + (Gamma(i)./(2.*pi.*radius(x,y,xGamma(i),yGamma)).*sin(theta));
+    V_theta_Gamma_y =  V_theta_Gamma_y + (-Gamma(i)./(2.*pi.*radius(x,y,xGamma(i),yGamma)).*cos(theta));
+<span class="keyword">end</span>
+
+<span class="comment">%add components and get magnitude</span>
+V = sqrt((u_U + V_r_Gamma+ V_theta_Gamma_x).^2 + (v_U + V_theta_Gamma_y).^2);
+
+<span class="comment">%get V max</span>
+V_max = max(max(V));
+
+<span class="comment">%pressure coefficient</span>
+cp = 1 - (V./V_inf).^2;
+<span class="comment">%dynamic pressure</span>
+q_inf = (1/2)*rho_inf*V_inf^2;
+P = cp.*q_inf + p_inf;
+
+<span class="comment">%get max P</span>
+
+P_max = max(max(P));
+
+<span class="comment">%% get actual values</span>
+N_high = 1000;
+<span class="comment">%sum up discretized strenghts</span>
+dx = c/N_high;
+x_c = dx/2:dx:c-dx/2;
+
+<span class="comment">%strength</span>
+Gamma = 2.*alpha.*V_inf.*sqrt((1-(x_c./c))./(x_c./c)).*dx;
+xGamma = x_c;  <span class="comment">% location of vortex</span>
+yGamma = 0;
+
+<span class="comment">% Define a function which calculates the radius.</span>
+<span class="comment">% Center of circle = (x1,y1)</span>
+radius= @(x,y,x1,y1) sqrt((x-x1).^2+(y-y1).^2);
+
+<span class="comment">% Calculate psi for uniform stream (Eq. 3.55; pg. 310)</span>
+Psi_U0 = (V_inf.*y.*cos(alpha) - V_inf.*x.*sin(alpha));
+
+<span class="comment">%get components of velocity - uniform</span>
+u_U = V_inf*cos(alpha);
+v_U = V_inf*sin(alpha);
+
+<span class="comment">%get components of velocity - vortex</span>
+V_r_Gamma = 0;
+V_theta_Gamma_x = 0;
+V_theta_Gamma_y = 0;
+<span class="keyword">for</span> i = 1:length(x_c)
+    theta = atan2(y,x-x_c(i));
+    V_theta_Gamma_x =  V_theta_Gamma_x + (Gamma(i)./(2.*pi.*radius(x,y,xGamma(i),yGamma)).*sin(theta));
+    V_theta_Gamma_y =  V_theta_Gamma_y + (-Gamma(i)./(2.*pi.*radius(x,y,xGamma(i),yGamma)).*cos(theta));
+<span class="keyword">end</span>
+
+<span class="comment">%add components and get magnitude</span>
+V = sqrt((u_U + V_r_Gamma+ V_theta_Gamma_x).^2 + (v_U + V_theta_Gamma_y).^2);
+
+<span class="comment">%get V max</span>
+V_max_actual = max(max(V));
+
+<span class="comment">%pressure coefficient</span>
+cp = 1 - (V./V_inf).^2;
+<span class="comment">%dynamic pressure</span>
+q_inf = (1/2)*rho_inf*V_inf^2;
+P = cp.*q_inf + p_inf;
+
+<span class="comment">%get max P</span>
+
+P_max_actual = max(max(P));
+
+<span class="comment">%% calculate error</span>
+
+error_V = abs(V_max - V_max_actual)/V_max_actual;
+error_P = abs(P_max - P_max_actual)/P_max_actual;
+
+
+<span class="keyword">end</span>
+
+</pre><pre class="language-matlab">
+<span class="keyword">function</span> Plot_Airfoil_Flow_variations(c,alpha,V_inf,p_inf,rho_inf,N)
+<span class="comment">%Plot_Airfoil_Flow_variations plot the flow over an airfoil with changing</span>
+<span class="comment">%values</span>
+<span class="comment">%   This function plots the streamlines, equipotential lines, and pressure </span>
+<span class="comment">%   contours for flow about a thin airfoil using approximation. Takes in</span>
+<span class="comment">%   vectors of varying chord length, angle of attack, and freesteam</span>
+<span class="comment">%   velocities</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators: </span>
+<span class="comment">%   Date: 10/10/19</span>
+
+
+<span class="comment">%loop through each variation (5 different values for each)</span>
+<span class="comment">%keep track of how many plots for placing in subplot</span>
+<span class="comment">%there will be three plots (for each varying variable) each with 15 (5 stream</span>
+<span class="comment">% functions, 5 equipotentials, and 5 pressure contours) plots inside</span>
+plot_num = 1;
+<span class="comment">%format plots to see everything</span>
+x0=10;
+y0=10;
+width=1500;
+height=400;
+
+<span class="comment">% original givens</span>
+c_orig = 2; <span class="comment">%m</span>
+alpha_orig = deg2rad(12); <span class="comment">%radians</span>
+V_inf_orig = 68; <span class="comment">% m/s</span>
+
+<span class="comment">%% loop through changes in chord length</span>
+figure <span class="comment">% all on same figure</span>
+set(gcf,<span class="string">'position'</span>,[x0,y0,width,height]);
+<span class="keyword">for</span> i = 1:length(c)
+    <span class="comment">% Define Domain</span>
+    xmin=-1;
+    xmax=3 + c(i);
+    ymin=-2 - c(i)/2;
+    ymax=1.5 + c(i)/2;
+
+    <span class="comment">% Define Number of Grid Points</span>
+    nx=100; <span class="comment">% steps in the x direction</span>
+    ny=100; <span class="comment">% steps in the y direction</span>
+
+    <span class="comment">% Create mesh over domain using number of grid points specified</span>
+    [x,y]=meshgrid(linspace(xmin,xmax,nx),linspace(ymin,ymax,ny));
+    
+    plot_num = i;
+<span class="comment">    %% Streamlines</span>
+    <span class="comment">%sum up discretized strenghts</span>
+    dx = c(i)/N;
+    x_c = dx/2:dx:c(i)-dx/2;
+    <span class="comment">%strength</span>
+    Gamma = 2.*alpha_orig.*V_inf_orig.*sqrt((1-(x_c./c(i)))./(x_c./c(i))).*dx;
+    xGamma = x_c;  <span class="comment">% location of vortex</span>
+    yGamma = 0;
+
+    <span class="comment">% Define a function which calculates the radius.</span>
+    <span class="comment">% Center of circle = (x1,y1)</span>
+    radius= @(x,y,x1,y1) sqrt((x-x1).^2+(y-y1).^2);
+
+    <span class="comment">% Calculate psi for uniform stream (Eq. 3.55; pg. 310)</span>
+    Psi_U0 = (V_inf_orig.*y.*cos(alpha_orig) - V_inf_orig.*x.*sin(alpha_orig));
+
+    <span class="comment">% Calculate psi for vortex (Eq. 3.114; pg. 310)</span>
+    Psi_Gamma = 0;
+    <span class="comment">% sum up each stream function (superposition)</span>
+    <span class="keyword">for</span> j = 1:length(x_c)
+        Psi_Gamma = Psi_Gamma + Gamma(j)/(2*pi)*log(radius(x,y,xGamma(j),yGamma));
+    <span class="keyword">end</span>
+    <span class="comment">% Add all streamfunctions together</span>
+    StreamFunction = Psi_U0 + Psi_Gamma; <span class="comment">%Psi_U0</span>
+
+    <span class="comment">% Plot streamfunction at levels</span>
+    subplot(2,5,plot_num);
+    plot_num = plot_num + 5; <span class="comment">%plot equipotentials on row below</span>
+    contour(x,y,StreamFunction, 30);
+    hold <span class="string">on</span>
+    plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+    <span class="comment">% Adjust axis and label figure</span>
+    axis <span class="string">equal</span>
+    axis([xmin xmax ymin ymax])
+    ylabel(<span class="string">'y'</span>)
+    xlabel(<span class="string">'x'</span>)
+    title(<span class="string">"Streamlines with c = "</span> + c(i) + <span class="string">" m"</span>);
+
+<span class="comment">    %% Equipotentials</span>
+
+    <span class="comment">%potential for uniform flow</span>
+    Phi_U = (V_inf_orig.*y.*sin(alpha_orig) - V_inf_orig.*x.*cos(alpha_orig));
+
+    <span class="comment">%potential for vortices</span>
+    Phi_Gamma = 0;
+    <span class="comment">% sum up each stream function (superposition)</span>
+    <span class="keyword">for</span> j = 1:length(x_c)
+        theta = atan2(y,x-x_c(j));
+        Phi_Gamma = Phi_Gamma + -Gamma(j)/(2*pi)*theta;
+    <span class="keyword">end</span>
+
+    <span class="comment">%add potential together</span>
+    Equipotentials = Phi_U + Phi_Gamma;
+
+    <span class="comment">% Plot equipotentials</span>
+    subplot(2,5,plot_num);
+    contour(x,y,Equipotentials, 30);
+    colorbar
+    hold <span class="string">on</span>
+    plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+    <span class="comment">% Adjust axis and label figure</span>
+    axis <span class="string">equal</span>
+    axis([xmin xmax ymin ymax])
+    ylabel(<span class="string">'y'</span>)
+    xlabel(<span class="string">'x'</span>)
+    title(<span class="string">"Equipotentials with c = "</span> + c(i) + <span class="string">" m"</span>);
+    
+<span class="keyword">end</span>
+
+<span class="comment">%% loop through changes in angle of attack</span>
+figure <span class="comment">% all on same figure</span>
+set(gcf,<span class="string">'position'</span>,[x0,y0,width,height]);
+<span class="keyword">for</span> i = 1:length(alpha)
+     <span class="comment">% Define Domain</span>
+    xmin=-1;
+    xmax=3;
+    ymin=-2;
+    ymax=1.5;
+
+    <span class="comment">% Define Number of Grid Points</span>
+    nx=100; <span class="comment">% steps in the x direction</span>
+    ny=100; <span class="comment">% steps in the y direction</span>
+
+    <span class="comment">% Create mesh over domain using number of grid points specified</span>
+    [x,y]=meshgrid(linspace(xmin,xmax,nx),linspace(ymin,ymax,ny));
+    
+    plot_num = i;
+    <span class="comment">%sum up discretized strenghts</span>
+    dx = c_orig/N;
+    x_c = dx/2:dx:c_orig-dx/2;
+    <span class="comment">%strength</span>
+    Gamma = 2.*alpha(i).*V_inf_orig.*sqrt((1-(x_c./c_orig))./(x_c./c_orig)).*dx;
+    xGamma = x_c;  <span class="comment">% location of vortex</span>
+    yGamma = 0;
+
+    <span class="comment">% Define a function which calculates the radius.</span>
+    <span class="comment">% Center of circle = (x1,y1)</span>
+    radius= @(x,y,x1,y1) sqrt((x-x1).^2+(y-y1).^2);
+
+    <span class="comment">% Calculate psi for uniform stream (Eq. 3.55; pg. 310)</span>
+    Psi_U0 = (V_inf_orig.*y.*cos(alpha(i)) - V_inf_orig.*x.*sin(alpha(i)));
+
+    <span class="comment">% Calculate psi for vortex (Eq. 3.114; pg. 310)</span>
+    Psi_Gamma = 0;
+    <span class="comment">% sum up each stream function (superposition)</span>
+    <span class="keyword">for</span> j = 1:length(x_c)
+        Psi_Gamma = Psi_Gamma + Gamma(j)/(2*pi)*log(radius(x,y,xGamma(j),yGamma));
+    <span class="keyword">end</span>
+    <span class="comment">% Add all streamfunctions together</span>
+    StreamFunction = Psi_U0 + Psi_Gamma; <span class="comment">%Psi_U0</span>
+
+    <span class="comment">% Plot streamfunction at levels</span>
+    subplot(2,5,plot_num);
+    plot_num = plot_num + 5; <span class="comment">%plot equipotentials on row below</span>
+    contour(x,y,StreamFunction, 30);
+    hold <span class="string">on</span>
+    plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+    <span class="comment">% Adjust axis and label figure</span>
+    axis <span class="string">equal</span>
+    axis([xmin xmax ymin ymax])
+    ylabel(<span class="string">'y'</span>)
+    xlabel(<span class="string">'x'</span>)
+    title(<span class="string">"Streamlines with alpha = "</span> + alpha(i) + <span class="string">" radians"</span>);
+
+<span class="comment">    %% Equipotentials</span>
+
+    <span class="comment">%potential for uniform flow</span>
+    Phi_U = (V_inf_orig.*y.*sin(alpha(i)) - V_inf_orig.*x.*cos(alpha(i)));
+
+    <span class="comment">%potential for vortices</span>
+    Phi_Gamma = 0;
+    <span class="comment">% sum up each stream function (superposition)</span>
+    <span class="keyword">for</span> j = 1:length(x_c)
+        theta = atan2(y,x-x_c(j));
+        Phi_Gamma = Phi_Gamma + -Gamma(j)/(2*pi)*theta;
+    <span class="keyword">end</span>
+
+    <span class="comment">%add potential together</span>
+    Equipotentials = Phi_U + Phi_Gamma;
+
+    <span class="comment">% Plot equipotentials</span>
+    subplot(2,5,plot_num);
+    contour(x,y,Equipotentials, 30);
+    colorbar
+    hold <span class="string">on</span>
+    plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+    <span class="comment">% Adjust axis and label figure</span>
+    axis <span class="string">equal</span>
+    axis([xmin xmax ymin ymax])
+    ylabel(<span class="string">'y'</span>)
+    xlabel(<span class="string">'x'</span>)
+    title(<span class="string">"Equipotentials with alpha = "</span> + alpha(i) + <span class="string">" radians"</span>);
+<span class="keyword">end</span>
+
+<span class="comment">%% loop through changes in V_inf</span>
+figure <span class="comment">% all on same figure</span>
+set(gcf,<span class="string">'position'</span>,[x0,y0,width,height]) 
+<span class="keyword">for</span> i = 1:length(V_inf)
+   
+    plot_num = i;
+    <span class="comment">%sum up discretized strenghts</span>
+    dx = c_orig/N;
+    x_c = dx/2:dx:c_orig-dx/2;
+    <span class="comment">%strength</span>
+    Gamma = 2.*alpha_orig.*V_inf(i).*sqrt((1-(x_c./c_orig))./(x_c./c_orig)).*dx;
+    xGamma = x_c;  <span class="comment">% location of vortex</span>
+    yGamma = 0;
+
+    <span class="comment">% Define a function which calculates the radius.</span>
+    <span class="comment">% Center of circle = (x1,y1)</span>
+    radius= @(x,y,x1,y1) sqrt((x-x1).^2+(y-y1).^2);
+
+    <span class="comment">% Calculate psi for uniform stream (Eq. 3.55; pg. 310)</span>
+    Psi_U0 = (V_inf(i).*y.*cos(alpha_orig) - V_inf(i).*x.*sin(alpha_orig));
+
+    <span class="comment">% Calculate psi for vortex (Eq. 3.114; pg. 310)</span>
+    Psi_Gamma = 0;
+    <span class="comment">% sum up each stream function (superposition)</span>
+    <span class="keyword">for</span> j = 1:length(x_c)
+        Psi_Gamma = Psi_Gamma + Gamma(j)/(2*pi)*log(radius(x,y,xGamma(j),yGamma));
+    <span class="keyword">end</span>
+    <span class="comment">% Add all streamfunctions together</span>
+    StreamFunction = Psi_U0 + Psi_Gamma; <span class="comment">%Psi_U0</span>
+
+    <span class="comment">% Plot streamfunction at levels</span>
+    subplot(2,5,plot_num);
+    plot_num = plot_num + 5; <span class="comment">%plot equipotentials on row below</span>
+    contour(x,y,StreamFunction, 30);
+    hold <span class="string">on</span>
+    plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+    <span class="comment">% Adjust axis and label figure</span>
+    axis <span class="string">equal</span>
+    axis([xmin xmax ymin ymax])
+    ylabel(<span class="string">'y'</span>)
+    xlabel(<span class="string">'x'</span>)
+    title(<span class="string">"Streamlines with Vinf = "</span> + V_inf(i) + <span class="string">" m/s"</span>);
+
+<span class="comment">    %% Equipotentials</span>
+
+    <span class="comment">%potential for uniform flow</span>
+    Phi_U = (V_inf(i).*y.*sin(alpha_orig) - V_inf(i).*x.*cos(alpha_orig));
+
+    <span class="comment">%potential for vortices</span>
+    Phi_Gamma = 0;
+    <span class="comment">% sum up each stream function (superposition)</span>
+    <span class="keyword">for</span> j = 1:length(x_c)
+        theta = atan2(y,x-x_c(j));
+        Phi_Gamma = Phi_Gamma + -Gamma(j)/(2*pi)*theta;
+    <span class="keyword">end</span>
+
+    <span class="comment">%add potential together</span>
+    Equipotentials = Phi_U + Phi_Gamma;
+
+    <span class="comment">% Plot equipotentials</span>
+    subplot(2,5,plot_num);
+    contour(x,y,Equipotentials, 30);
+    colorbar
+    hold <span class="string">on</span>
+    plot(xGamma,zeros(1,N),<span class="string">'LineWidth'</span>, 5, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+    <span class="comment">% Adjust axis and label figure</span>
+    axis <span class="string">equal</span>
+    axis([xmin xmax ymin ymax])
+    ylabel(<span class="string">'y'</span>)
+    xlabel(<span class="string">'x'</span>)
+    title(<span class="string">"Equipotentials with Vinf = "</span> + V_inf(i) + <span class="string">" m/s"</span>);
+<span class="keyword">end</span>
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3111 - Computational Assignment 02 - Main
+%  Flow Over Thin Airfoils
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 10/10/19
+   
+clc
+clear all
+close all
+
+%givens
+c = 2; %m
+alpha = deg2rad(12); %radians
+V_inf = 68; % m/s
+p_inf = 101.3e3; %Pa
+rho_inf = 1.225; %kg/m^3
+N = 20;
+
+%plot airfoil flow - with lowish number of vortices
+Plot_Airfoil_Flow(c, alpha, V_inf, p_inf, rho_inf, N);
+
+%vary number of N vorticies
+%try very high number to approximate the actual results
+N_high = 1000;
+Plot_Airfoil_Flow(c, alpha, V_inf, p_inf, rho_inf, N_high);
+
+%% make error plots
+%vector of varying number of vortices
+vort_vec = 0:10:300;
+for i = 1:length(vort_vec)
+    [error_V(i),error_P(i)] = calcError(c, alpha, V_inf, p_inf, rho_inf, vort_vec(i));
+end
+
+%find 5% percent error on plots
+index_V = find(error_V <= 0.05,1);
+index_P = find(error_P <= 0.05, 1);
+
+fprintf('The number of vortices requires to get <=5 percent error in Velocity: %f\n', vort_vec(index_V));
+fprintf('The number of vortices requires to get <=5 percent error in Pressure: %f\n', vort_vec(index_P));
+fprintf('********************************************\n');
+
+figure
+plot(vort_vec, error_V);
+hold on
+yline(0.05, 'rREPLACE_WITH_DASH_DASH');
+xlabel('Number of Vortices');
+ylabel('Error');
+title('Error in Velocity vs Number of vorticies');
+legend('error curve','5 percent error line');
+figure
+plot(vort_vec, error_P);
+hold on
+yline(0.05, 'rREPLACE_WITH_DASH_DASH');
+xlabel('Number of Vortices');
+ylabel('Error');
+title('Error in Pressure vs Number of vorticies');
+legend('error curve','5 percent error line');
+
+%% study changes in 1) chord length 2) angle of attack 3) freestream flow speed
+
+%vectors of varying values
+chords = linspace(1,10,5);
+alphas = linspace(0, pi/2, 5);
+speeds = linspace(1,100,5);
+N = 50; % determined to be accurate enough from above
+
+%plot these variations
+Plot_Airfoil_Flow_variations(chords, alphas, speeds, p_inf, rho_inf, N);
+
+%% Functions Called
+% The following functions were built and called as apart of this
+% assignment.
+%
+% <include>Plot_Airfoil_Flow.m</include>
+%
+%
+% <include>calcError.m</include>
+%
+%
+% <include>Plot_Airfoil_Flow_variations.m</include>
+%
+##### SOURCE END #####
+--></body></html>

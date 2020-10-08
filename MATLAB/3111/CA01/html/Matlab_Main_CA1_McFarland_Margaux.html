@@ -1,0 +1,671 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Matlab_Main_CA1_McFarland_Margaux</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-09-19"><meta name="DC.source" content="Matlab_Main_CA1_McFarland_Margaux.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3111 - Computational Assignment 01 - Main</a></li><li><a href="#2">Problem 1</a></li><li><a href="#3">Problem 2</a></li><li><a href="#4">Functions Called</a></li></ul></div><h2 id="1">ASEN 3111 - Computational Assignment 01 - Main</h2><pre>Approximate the lift and drag per unit span on a stationary cylinder.</pre><pre class="language-matlab">Author: Margaux McFarland
+Collaborators:
+Date: 9/19/19
+</pre><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+</pre><h2 id="2">Problem 1</h2><pre class="codeinput"><span class="comment">%variables</span>
+d = 1; <span class="comment">%diameter [m]</span>
+v = 30; <span class="comment">%freestram airspeed [m/s]</span>
+rho = 1.225; <span class="comment">%air density [kg/m^3]</span>
+p = -101.3e3; <span class="comment">%free stream pressure [Pa]</span>
+q = (1/2)*rho*v^2; <span class="comment">%dynamic pressure</span>
+
+<span class="comment">%set up variables for simpson's rule</span>
+a = 0; <span class="comment">% lower bound</span>
+b = 2*pi; <span class="comment">%upper bound</span>
+
+<span class="comment">%number of panels</span>
+N = 100;
+
+theta = a:b/(N*2):b; <span class="comment">%from 0 to 2pi</span>
+c_p = 1 - 4.*(sin(theta)).^2; <span class="comment">%coefficient of pressure</span>
+P = q*c_p + p; <span class="comment">%solve for pressure</span>
+
+<span class="comment">%lift and drag functions to be integrated</span>
+lift_func = -P.*sin(theta).*(d/2);
+drag_func = P.*cos(theta).*(d/2);
+
+<span class="comment">%prints out lift and drag values for N panels</span>
+Lift = simpRule(lift_func, a, b, N, theta)
+Drag = simpRule(drag_func, a, b, N, theta)
+
+<span class="comment">%plot lift and drag</span>
+plotLift(a, b, p, q, d, N)
+
+fprintf(<span class="string">"The minimum number of panels needed to accurately apporximate the lift and/or drag is 2 panels.\n"</span>);
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA1_McFarland_Margaux_01.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA1_McFarland_Margaux_02.png" alt=""> <h2 id="3">Problem 2</h2><pre class="codeinput"><span class="comment">%number of integration points for trap rule</span>
+n = 30;
+<span class="comment">%lift and drag</span>
+[L,D] = airfoilLiftDrag(n)
+
+<span class="comment">%error analysis</span>
+
+<span class="comment">%find lift/drag with a very large number of points and estimate that value as</span>
+<span class="comment">%the actual values</span>
+N_high = 500;
+
+[L_actual, D_actual] = airfoilLiftDrag(N_high)
+
+fprintf(<span class="string">"Number of equispaced integration points required to obtain a lift soltuion with...\n"</span>);
+
+<span class="keyword">for</span> i = 0:500
+    [L1, ~] = airfoilLiftDrag(i);
+    <span class="keyword">if</span> abs(L_actual - L1) &lt;= 0.05*L_actual
+        <span class="comment">% 5 percent relative error</span>
+    	fprintf(<span class="string">"5 percent relative error: %d\n"</span>, i);
+        <span class="keyword">for</span> j = i:500
+           [L2, ~] = airfoilLiftDrag(j);
+           <span class="keyword">if</span> abs(L_actual - L2) &lt;= 0.01*L_actual
+               <span class="comment">% 1 percent relative error</span>
+                fprintf(<span class="string">"1 percent relative error: %d\n"</span>, j);
+                <span class="keyword">for</span> k = j:500
+                    [L3, ~] = airfoilLiftDrag(k);
+                   <span class="keyword">if</span> abs(L_actual - L3) &lt;= 0.001*L_actual
+                       <span class="comment">% 1/10 percent relative error</span>
+                        fprintf(<span class="string">"1/10 percent relative error: %d\n"</span>, k);
+                        <span class="keyword">break</span>;
+                   <span class="keyword">end</span>
+                <span class="keyword">end</span>
+                <span class="keyword">break</span>;
+           <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        <span class="keyword">break</span>;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%plot</span>
+alpha = 9; <span class="comment">%degress</span>
+plotLift2(p, q, d, 500, alpha, i, j, k, L1, L2, L3, L_actual);
+</pre><pre class="codeoutput">
+L =
+
+  542.3095
+
+
+D =
+
+   20.6485
+
+
+L_actual =
+
+  594.0019
+
+
+D_actual =
+
+   -6.7945
+
+Number of equispaced integration points required to obtain a lift soltuion with...
+5 percent relative error: 50
+1 percent relative error: 155
+1/10 percent relative error: 385
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA1_McFarland_Margaux_03.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA1_McFarland_Margaux_04.png" alt=""> <h2 id="4">Functions Called</h2><p>The following functions were built and called as apart of this assignment.</p><pre class="language-matlab">
+<span class="keyword">function</span> F = simpRule(f, a,  b, N, theta)
+<span class="comment">%simpRule This function uses Simpson's Rule </span>
+<span class="comment">%   Simpson's Rule approximates the area under a curve by a parabola</span>
+<span class="comment">%   connecting the curve at the endpoints and the midpoints. This function </span>
+<span class="comment">%   takes in the function (f) being approximated,the upper(b),lower bounds </span>
+<span class="comment">%   (a), the number of panels (N), and returns the area.</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators: </span>
+<span class="comment">%   Date: 9/13/19</span>
+
+
+h = (b-a)/(2*N); <span class="comment">%height of each panel</span>
+<span class="comment">%area being approximated</span>
+F = 0;
+<span class="keyword">for</span> i = 1:N
+    <span class="comment">%indicied of points along cylinder </span>
+    k1 = 2*i - 1;
+    k2 = 2*i;
+    k3 = 2*i + 1;
+    <span class="comment">%sum each force</span>
+    F = F + f(k1) + 4*f(k2) + f(k3);
+<span class="keyword">end</span>
+    
+    F = F * (h/3);
+<span class="keyword">end</span> 
+
+</pre><pre class="codeinput"><span class="keyword">function</span> F = simpRule(f, a,  b, N, theta)
+<span class="comment">%simpRule This function uses Simpson's Rule</span>
+<span class="comment">%   Simpson's Rule approximates the area under a curve by a parabola</span>
+<span class="comment">%   connecting the curve at the endpoints and the midpoints. This function</span>
+<span class="comment">%   takes in the function (f) being approximated,the upper(b),lower bounds</span>
+<span class="comment">%   (a), the number of panels (N), and returns the area.</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators:</span>
+<span class="comment">%   Date: 9/13/19</span>
+
+
+h = (b-a)/(2*N); <span class="comment">%height of each panel</span>
+<span class="comment">%area being approximated</span>
+F = 0;
+<span class="keyword">for</span> i = 1:N
+    <span class="comment">%indicied of points along cylinder</span>
+    k1 = 2*i - 1;
+    k2 = 2*i;
+    k3 = 2*i + 1;
+    <span class="comment">%sum each force</span>
+    F = F + f(k1) + 4*f(k2) + f(k3);
+<span class="keyword">end</span>
+
+    F = F * (h/3);
+<span class="keyword">end</span>
+<span class="comment">% &lt;include&gt;plotLift.m&lt;/include&gt;</span>
+<span class="keyword">function</span> [] = plotLift(a, b, p, q, d, n)
+<span class="comment">%This function plots lift and drag versus the number of panels used for</span>
+<span class="comment">%simpsons rule. Takes in the upper and lower bounds, free stream pressure,</span>
+<span class="comment">%dynamic pressure, diameter, and total number of panels.</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators:</span>
+<span class="comment">%   Date: 9/13/19</span>
+
+N = 4:n;
+
+<span class="keyword">for</span> i = N
+    theta = a:b/(i*2):b;
+    c_p = 1 - 4.*(sin(theta)).^2; <span class="comment">%coefficient of pressure</span>
+    P = q*c_p + p; <span class="comment">%solve for pressure</span>
+    lift_func = -P.*sin(theta).*(d/2);
+    drag_func = P.*cos(theta).*(d/2);
+    <span class="comment">%lift and drag vectors for each number of panels</span>
+    Lift(i-3) = simpRule(lift_func, a, b, i, theta);
+    Drag(i-3) = simpRule(drag_func, a, b, i, theta);
+<span class="keyword">end</span>
+<span class="comment">%plot lift</span>
+figure(1)
+plot(N, Lift);
+grid <span class="string">on</span>
+xlabel(<span class="string">"Number of Panels"</span>);
+ylabel(<span class="string">"Lift (N)"</span>);
+title(<span class="string">"Lift vs Number of Panels"</span>);
+hold <span class="string">on</span>
+yline(0);
+<span class="comment">%plot drag</span>
+figure(2);
+plot(N, Drag);
+grid <span class="string">on</span>
+xlabel(<span class="string">"Number of Panels"</span>);
+ylabel(<span class="string">"Drag (N)"</span>);
+title(<span class="string">"Drag vs Number of Panels"</span>);
+hold <span class="string">on</span>
+yline(0);
+
+<span class="keyword">end</span>
+<span class="comment">% &lt;include&gt;trapRule.m&lt;/include&gt;</span>
+<span class="keyword">function</span> F = trapRule(x, f, N)
+<span class="comment">%trapRule This function uses the composite trapezoidal rule</span>
+<span class="comment">%   Composite trap rule approximates the area under a curve by creating a</span>
+<span class="comment">%   trapezoid at integration points along the curve. Returns the</span>
+<span class="comment">%   approximated area F under the curve represented by the vector f.</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators:</span>
+<span class="comment">%   Date: 9/17/19</span>
+
+<span class="comment">%area</span>
+F = 0;
+
+<span class="keyword">for</span> k = 1:N <span class="comment">%loop through integration panels</span>
+    <span class="comment">%sum each trapezoid area</span>
+    F = F + (x(k+1) - x(k))*((f(k+1) + f(k))/2);
+<span class="keyword">end</span>
+
+<span class="keyword">end</span>
+<span class="comment">% &lt;include&gt;plotLift2.m&lt;/include&gt;</span>
+<span class="keyword">function</span> [] = plotLift2(p, q, d, n, alpha, i2, j, k, L1, L2, L3, L_actual)
+<span class="comment">%This function plots lift and drag versus the number of panels used for</span>
+<span class="comment">%trap rule. Takes in the free stream pressure, dynamic pressure, diameter,</span>
+<span class="comment">%angle of attack, the accurancy points, and total number of integration points.</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators:</span>
+<span class="comment">%   Date: 9/17/19</span>
+
+N = 1:n;
+count = 1;
+<span class="keyword">for</span> i = N
+    [L(count), D(count)] = airfoilLiftDrag(i);
+    count = count + 1;
+<span class="keyword">end</span>
+    <span class="comment">%lift plot</span>
+    figure(3)
+    plot(N, L);
+    grid <span class="string">on</span>
+    xlabel(<span class="string">"Number of integration points"</span>);
+    ylabel(<span class="string">"Lift (N)"</span>);
+    title(<span class="string">"Approximated Lift for n number of Integration Points"</span>);
+    hold <span class="string">on</span>
+    <span class="comment">%mark points on plot where accuracies acheived</span>
+    plot(i2, L1, <span class="string">'r*'</span>);
+    hold <span class="string">on</span>;
+    plot(j, L2, <span class="string">'g*'</span>);
+    hold <span class="string">on</span>;
+    plot(k, L3, <span class="string">'b*'</span>);
+    hold <span class="string">on</span>
+    <span class="comment">%actual value</span>
+    yline(L_actual,<span class="string">'m--'</span>);
+    xlim([0 700]); <span class="comment">%so points are visible with legend</span>
+    legend(<span class="string">"Approximated Lift"</span>, <span class="string">"5% relative error"</span>,<span class="string">"1% relative error"</span>,<span class="string">"0.1% relative error"</span>, <span class="string">"Actual Lift"</span>);
+
+    <span class="comment">%drag plot</span>
+    figure(4)
+    plot(N, D);
+    grid <span class="string">on</span>
+    xlabel(<span class="string">"Number of integration points"</span>);
+    ylabel(<span class="string">"Drag (N)"</span>);
+    title(<span class="string">"Approximated Drag for n number of Integration Points"</span>);
+
+
+<span class="keyword">end</span>
+<span class="comment">% &lt;include&gt;airfoilLiftDrag.m&lt;/include&gt;</span>
+<span class="keyword">function</span> [L, D] = airfoilLiftDrag(N)
+<span class="comment">%airfoilLiftDrag This function takes in a number of integration points and</span>
+<span class="comment">%then solves for lift and drag using Cp.mat to get the coefficient of</span>
+<span class="comment">%pressure. Uses a NACA 0012 air foil.</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators:</span>
+<span class="comment">%   Date: 9/19/19</span>
+
+<span class="comment">%given variables</span>
+c = 2; <span class="comment">%chord length [m]</span>
+alpha = 9; <span class="comment">%angle of attack [deg]</span>
+d = 1; <span class="comment">%diameter [m]</span>
+v = 30; <span class="comment">%freestream airspeed [m/s]</span>
+rho = 1.225; <span class="comment">%air density</span>
+p = 101.3e3; <span class="comment">%free stream pressure [Pa]</span>
+q = (1/2)*rho*v^2; <span class="comment">%dynamic pressure</span>
+
+<span class="comment">%percent location along chord (x/c)</span>
+x = 0:1/N:1;
+<span class="comment">%x = linspace(0,c, N);</span>
+load <span class="string">Cp</span>
+<span class="comment">%cp value at each location (upper surface)</span>
+cp_up = fnval(Cp_upper, x);
+<span class="comment">%cp value at each location (lower surface)</span>
+cp_low = fnval(Cp_lower, x);
+
+P_up = q.*cp_up + p; <span class="comment">%solve for pressure</span>
+P_low = q.*cp_low + p; <span class="comment">%solve for pressure</span>
+
+<span class="comment">%get thickness (NACA 0012)</span>
+t = 12/100;
+y_t = (t/0.2)*c.*(0.2969.*sqrt(x) - 0.1260.*x - 0.3516.*x.^2 + 0.2843.*x.^3 - 0.1038.*x.^4);
+
+<span class="comment">%normal force (coefficient)</span>
+cn = (1/c)*trapRule(c.*x,cp_low-cp_up, N-1);
+<span class="comment">%axial force (coefficient)</span>
+ca = (1/c)*trapRule(y_t, cp_up-cp_low, N-1);
+
+<span class="comment">%coefficients</span>
+cl = cn*cosd(alpha) - ca*sind(alpha);
+cd = cn*sind(alpha) + ca*cosd(alpha);
+
+L = cl*q;
+D = cd*q;
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+Lift =
+
+   2.6233e-12
+
+
+Drag =
+
+   1.4934e-11
+
+The minimum number of panels needed to accurately apporximate the lift and/or drag is 2 panels.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3111 - Computational Assignment 01 - Main
+%  Approximate the lift and drag per unit span on a stationary cylinder.
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 9/19/19
+
+clc
+clear all
+close all
+%% Problem 1
+%variables
+d = 1; %diameter [m]
+v = 30; %freestram airspeed [m/s]
+rho = 1.225; %air density [kg/m^3]
+p = -101.3e3; %free stream pressure [Pa]
+q = (1/2)*rho*v^2; %dynamic pressure
+
+%set up variables for simpson's rule
+a = 0; % lower bound
+b = 2*pi; %upper bound
+
+%number of panels 
+N = 100; 
+
+theta = a:b/(N*2):b; %from 0 to 2pi
+c_p = 1 - 4.*(sin(theta)).^2; %coefficient of pressure
+P = q*c_p + p; %solve for pressure 
+
+%lift and drag functions to be integrated
+lift_func = -P.*sin(theta).*(d/2);
+drag_func = P.*cos(theta).*(d/2);
+
+%prints out lift and drag values for N panels
+Lift = simpRule(lift_func, a, b, N, theta)
+Drag = simpRule(drag_func, a, b, N, theta)
+
+%plot lift and drag
+plotLift(a, b, p, q, d, N)
+
+fprintf("The minimum number of panels needed to accurately apporximate the lift and/or drag is 2 panels.\n");
+
+%% Problem 2
+
+%number of integration points for trap rule
+n = 30;
+%lift and drag
+[L,D] = airfoilLiftDrag(n)
+
+%error analysis
+
+%find lift/drag with a very large number of points and estimate that value as
+%the actual values
+N_high = 500;
+
+[L_actual, D_actual] = airfoilLiftDrag(N_high)
+
+fprintf("Number of equispaced integration points required to obtain a lift soltuion with...\n");
+
+for i = 0:500
+    [L1, ~] = airfoilLiftDrag(i);
+    if abs(L_actual - L1) <= 0.05*L_actual
+        % 5 percent relative error
+    	fprintf("5 percent relative error: %d\n", i);
+        for j = i:500
+           [L2, ~] = airfoilLiftDrag(j);
+           if abs(L_actual - L2) <= 0.01*L_actual
+               % 1 percent relative error
+                fprintf("1 percent relative error: %d\n", j);
+                for k = j:500
+                    [L3, ~] = airfoilLiftDrag(k);
+                   if abs(L_actual - L3) <= 0.001*L_actual 
+                       % 1/10 percent relative error
+                        fprintf("1/10 percent relative error: %d\n", k);
+                        break;
+                   end
+                end
+                break;
+           end
+        end
+        break;
+    end
+end
+
+%plot
+alpha = 9; %degress
+plotLift2(p, q, d, 500, alpha, i, j, k, L1, L2, L3, L_actual);
+
+%% Functions Called
+% The following functions were built and called as apart of this
+% assignment.
+%
+% <include>simpRule.m</include>
+function F = simpRule(f, a,  b, N, theta)
+%simpRule This function uses Simpson's Rule 
+%   Simpson's Rule approximates the area under a curve by a parabola
+%   connecting the curve at the endpoints and the midpoints. This function 
+%   takes in the function (f) being approximated,the upper(b),lower bounds 
+%   (a), the number of panels (N), and returns the area.
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 9/13/19
+
+
+h = (b-a)/(2*N); %height of each panel
+%area being approximated
+F = 0;
+for i = 1:N
+    %indicied of points along cylinder 
+    k1 = 2*i - 1;
+    k2 = 2*i;
+    k3 = 2*i + 1;
+    %sum each force
+    F = F + f(k1) + 4*f(k2) + f(k3);
+end
+    
+    F = F * (h/3);
+end 
+% <include>plotLift.m</include>
+function [] = plotLift(a, b, p, q, d, n)
+%This function plots lift and drag versus the number of panels used for
+%simpsons rule. Takes in the upper and lower bounds, free stream pressure,
+%dynamic pressure, diameter, and total number of panels.
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 9/13/19
+
+N = 4:n;
+
+for i = N
+    theta = a:b/(i*2):b;
+    c_p = 1 - 4.*(sin(theta)).^2; %coefficient of pressure
+    P = q*c_p + p; %solve for pressure 
+    lift_func = -P.*sin(theta).*(d/2);
+    drag_func = P.*cos(theta).*(d/2);
+    %lift and drag vectors for each number of panels
+    Lift(i-3) = simpRule(lift_func, a, b, i, theta);
+    Drag(i-3) = simpRule(drag_func, a, b, i, theta);
+end
+%plot lift
+figure(1)
+plot(N, Lift);
+grid on
+xlabel("Number of Panels");
+ylabel("Lift (N)");
+title("Lift vs Number of Panels");
+hold on
+yline(0);
+%plot drag
+figure(2);
+plot(N, Drag);
+grid on
+xlabel("Number of Panels");
+ylabel("Drag (N)");
+title("Drag vs Number of Panels");
+hold on
+yline(0);
+
+end
+% <include>trapRule.m</include>
+function F = trapRule(x, f, N)
+%trapRule This function uses the composite trapezoidal rule
+%   Composite trap rule approximates the area under a curve by creating a 
+%   trapezoid at integration points along the curve. Returns the
+%   approximated area F under the curve represented by the vector f.
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 9/17/19
+
+%area 
+F = 0;
+
+for k = 1:N %loop through integration panels
+    %sum each trapezoid area
+    F = F + (x(k+1) - x(k))*((f(k+1) + f(k))/2); 
+end
+
+end
+% <include>plotLift2.m</include>
+function [] = plotLift2(p, q, d, n, alpha, i2, j, k, L1, L2, L3, L_actual)
+%This function plots lift and drag versus the number of panels used for
+%trap rule. Takes in the free stream pressure, dynamic pressure, diameter, 
+%angle of attack, the accurancy points, and total number of integration points.
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 9/17/19
+
+N = 1:n;
+count = 1;
+for i = N
+    [L(count), D(count)] = airfoilLiftDrag(i);
+    count = count + 1;
+end
+    %lift plot
+    figure(3)
+    plot(N, L);
+    grid on
+    xlabel("Number of integration points");
+    ylabel("Lift (N)");
+    title("Approximated Lift for n number of Integration Points");
+    hold on
+    %mark points on plot where accuracies acheived
+    plot(i2, L1, 'r*');
+    hold on;
+    plot(j, L2, 'g*');
+    hold on;
+    plot(k, L3, 'b*');
+    hold on
+    %actual value
+    yline(L_actual,'mREPLACE_WITH_DASH_DASH');
+    xlim([0 700]); %so points are visible with legend
+    legend("Approximated Lift", "5% relative error","1% relative error","0.1% relative error", "Actual Lift");
+    
+    %drag plot
+    figure(4)
+    plot(N, D);
+    grid on
+    xlabel("Number of integration points");
+    ylabel("Drag (N)");
+    title("Approximated Drag for n number of Integration Points");
+   
+    
+end
+% <include>airfoilLiftDrag.m</include>
+function [L, D] = airfoilLiftDrag(N)
+%airfoilLiftDrag This function takes in a number of integration points and
+%then solves for lift and drag using Cp.mat to get the coefficient of
+%pressure. Uses a NACA 0012 air foil.
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 9/19/19
+
+%given variables
+c = 2; %chord length [m]
+alpha = 9; %angle of attack [deg]
+d = 1; %diameter [m]
+v = 30; %freestream airspeed [m/s]
+rho = 1.225; %air density
+p = 101.3e3; %free stream pressure [Pa]
+q = (1/2)*rho*v^2; %dynamic pressure
+
+%percent location along chord (x/c)
+x = 0:1/N:1;
+%x = linspace(0,c, N);
+load Cp
+%cp value at each location (upper surface)
+cp_up = fnval(Cp_upper, x);
+%cp value at each location (lower surface)
+cp_low = fnval(Cp_lower, x);
+
+P_up = q.*cp_up + p; %solve for pressure
+P_low = q.*cp_low + p; %solve for pressure
+
+%get thickness (NACA 0012)
+t = 12/100;
+y_t = (t/0.2)*c.*(0.2969.*sqrt(x) - 0.1260.*x - 0.3516.*x.^2 + 0.2843.*x.^3 - 0.1038.*x.^4);
+
+%normal force (coefficient)
+cn = (1/c)*trapRule(c.*x,cp_low-cp_up, N-1);
+%axial force (coefficient)
+ca = (1/c)*trapRule(y_t, cp_up-cp_low, N-1);
+
+%coefficients
+cl = cn*cosd(alpha) - ca*sind(alpha);
+cd = cn*sind(alpha) + ca*cosd(alpha);
+
+L = cl*q;
+D = cd*q;
+
+end
+##### SOURCE END #####
+--></body></html>

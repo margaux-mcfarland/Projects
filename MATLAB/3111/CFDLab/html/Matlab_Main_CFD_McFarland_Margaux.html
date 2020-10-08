@@ -1,0 +1,221 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ASEN 3111 - CFD Lab - Main</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-12-10"><meta name="DC.source" content="Matlab_Main_CFD_McFarland_Margaux.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>ASEN 3111 - CFD Lab - Main</h1><pre>Turbulent Flow over a NACA 0012 airfoil</pre><pre class="language-matlab">Author: Margaux McFarland
+Collaborators: Brendan Palmer
+Date: 12/10/19
+</pre><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+
+<span class="comment">%load in mat file (made in premain)</span>
+load <span class="string">Data_CFD_McFarland_Margaux.mat</span>
+
+<span class="comment">%loop through the mat file struct</span>
+<span class="keyword">for</span> i = 1:length(results)
+  <span class="comment">%take the last value in of the force coefficient because that is where</span>
+  <span class="comment">%values converged</span>
+  <span class="comment">%first 12 are cd with positive AoA</span>
+  <span class="keyword">if</span> i &lt; 13
+      CD(i + 2) = results(i).forceCoeff(end);
+  <span class="keyword">elseif</span> i == 13 <span class="comment">%next two files are cd with negative AoA</span>
+      CD(i - 12) = results(i).forceCoeff(end);
+  <span class="keyword">elseif</span> i == 14
+      CD(i - 13) = results(i).forceCoeff(end);
+  <span class="keyword">elseif</span> i &lt; 27 <span class="comment">%last 12 cl with positive AoA</span>
+      CL(i - 12) = results(i).forceCoeff(end);
+  <span class="keyword">elseif</span> i == 27 <span class="comment">%next two files are cl with negative AoA</span>
+      CL(i - 25) = results(i).forceCoeff(end);
+  <span class="keyword">elseif</span> i == 28
+      CL(i - 27) = results(i).forceCoeff(end);
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%angle of attack vector</span>
+AoA = -4:2:20;
+<span class="comment">%add 15 degrees</span>
+AoA = [AoA(1:10) 15 AoA(11:end)];
+<span class="comment">%plots</span>
+figure(1)
+plot(CL,CD,<span class="string">'s'</span>);
+title(<span class="string">'c_{D} vs AoA for NACA 0012'</span>);
+xlabel(<span class="string">'Coefficient of Lift'</span>);
+ylabel(<span class="string">'Coefficient of Drag'</span>);
+grid <span class="string">on</span>
+figure(2)
+plot(AoA,CL, <span class="string">'-o'</span>);
+title(<span class="string">'c_{L} vs AoA for NACA 0012'</span>);
+xlabel(<span class="string">'Angle of Attack, degrees'</span>);
+ylabel(<span class="string">'Coefficient of Lift'</span>);
+hold <span class="string">on</span>
+grid <span class="string">on</span>
+
+<span class="comment">%estimate stall angle</span>
+stall_angle = 15; <span class="comment">%degrees</span>
+<span class="comment">%find lift slope - only take linear portion (ignore stall)</span>
+lift_slope = (CL(find(AoA == 10, 1)) - CL(1))/(10 - AoA(1));
+<span class="comment">%find zero lift AoA, find when cl is closest to zero</span>
+zero_lift_AoA = AoA(find(abs(CL) == min(abs(CL)),1));
+<span class="comment">%find max cl</span>
+max_cl = max(CL);
+
+<span class="comment">%thin airfoil theory</span>
+AoA = -4:2:20;
+lift_slope_thin = deg2rad(2*pi);
+zeroAoA_thin = 0; <span class="comment">%symmetric airfoil</span>
+cl_thin = lift_slope_thin.*(AoA-deg2rad(zeroAoA_thin));
+plot(AoA, cl_thin);
+hold <span class="string">on</span>
+
+<span class="comment">%vortex panel method</span>
+<span class="comment">%load in comp 3 assignment data on NACA 0012</span>
+load <span class="string">Cl_different_AOA_0012.mat</span>
+plot(AoA,Cl_different_AOA_0012);
+legend(<span class="string">'CFD'</span>,<span class="string">'Thin Airfoil Theory'</span>,<span class="string">'Vortex-Panel Method'</span>);
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CFD_McFarland_Margaux_01.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CFD_McFarland_Margaux_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3111 - CFD Lab - Main
+%  Turbulent Flow over a NACA 0012 airfoil
+%
+%   Author: Margaux McFarland
+%   Collaborators: Brendan Palmer
+%   Date: 12/10/19
+
+clc
+clear all
+close all
+
+%load in mat file (made in premain)
+load Data_CFD_McFarland_Margaux.mat
+
+%loop through the mat file struct
+for i = 1:length(results)
+  %take the last value in of the force coefficient because that is where
+  %values converged 
+  %first 12 are cd with positive AoA
+  if i < 13
+      CD(i + 2) = results(i).forceCoeff(end);
+  elseif i == 13 %next two files are cd with negative AoA 
+      CD(i - 12) = results(i).forceCoeff(end);
+  elseif i == 14
+      CD(i - 13) = results(i).forceCoeff(end);
+  elseif i < 27 %last 12 cl with positive AoA
+      CL(i - 12) = results(i).forceCoeff(end);
+  elseif i == 27 %next two files are cl with negative AoA 
+      CL(i - 25) = results(i).forceCoeff(end);
+  elseif i == 28
+      CL(i - 27) = results(i).forceCoeff(end);
+  end
+end
+
+%angle of attack vector
+AoA = -4:2:20;
+%add 15 degrees
+AoA = [AoA(1:10) 15 AoA(11:end)];
+%plots
+figure(1)
+plot(CL,CD,'s');
+title('c_{D} vs AoA for NACA 0012');
+xlabel('Coefficient of Lift');
+ylabel('Coefficient of Drag');
+grid on
+figure(2)
+plot(AoA,CL, '-o');
+title('c_{L} vs AoA for NACA 0012');
+xlabel('Angle of Attack, degrees');
+ylabel('Coefficient of Lift');
+hold on
+grid on
+
+%estimate stall angle
+stall_angle = 15; %degrees
+%find lift slope - only take linear portion (ignore stall)
+lift_slope = (CL(find(AoA == 10, 1)) - CL(1))/(10 - AoA(1));
+%find zero lift AoA, find when cl is closest to zero
+zero_lift_AoA = AoA(find(abs(CL) == min(abs(CL)),1));
+%find max cl
+max_cl = max(CL);
+
+%thin airfoil theory
+AoA = -4:2:20;
+lift_slope_thin = deg2rad(2*pi); 
+zeroAoA_thin = 0; %symmetric airfoil
+cl_thin = lift_slope_thin.*(AoA-deg2rad(zeroAoA_thin));
+plot(AoA, cl_thin);
+hold on 
+
+%vortex panel method
+%load in comp 3 assignment data on NACA 0012
+load Cl_different_AOA_0012.mat
+plot(AoA,Cl_different_AOA_0012);
+legend('CFD','Thin Airfoil Theory','Vortex-Panel Method');
+
+
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,472 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Assignment7_Main</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-24"><meta name="DC.source" content="Assignment7_Main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3128 - Assignment 07 - Main</a></li><li><a href="#2">Problem 6 - use ode45</a></li><li><a href="#3">add deviations</a></li><li><a href="#4">Functions Called</a></li></ul></div><h2 id="1">ASEN 3128 - Assignment 07 - Main</h2><p>Dimensional Derivatives / B747-100 dynamics</p><pre class="language-matlab">Author: Margaux McFarland
+Collaborators: Robert Redfern
+Date: 10/24/19
+</pre><pre class="codeinput">close <span class="string">all</span>; clear <span class="string">all</span>; clc;
+
+<span class="comment">%givens for B747-100 case II</span>
+zeta = deg2rad(-6.8); <span class="comment">%radians, angle from stability frame</span>
+W = 2831737.87; <span class="comment">%N, weight</span>
+g = 9.81; <span class="comment">%N, gravity</span>
+m = W/g; <span class="comment">%kg, mass</span>
+theta_0 = 0; <span class="comment">%radians, trim elevation</span>
+V_e = 157.886; <span class="comment">%m/s, airspeed</span>
+u0 = V_e; <span class="comment">%m/s, x-component is the same as airspeed in stability frame</span>
+<span class="comment">%moment of inertias</span>
+Ix = 2.47e7; <span class="comment">%kg*m^2</span>
+Iy = 4.49e7;
+Iz = 6.74e7;
+Izx = 1.32e6;
+cd = 0.04; <span class="comment">%coefficient of drag</span>
+
+
+<span class="comment">%body frame stability derivatives</span>
+Xu = -712.9;
+Xw = 22571.14;
+Xq = 0;
+Xwdot = 0;
+Xdeltae = 3.994*10^4;
+
+Zu = -19592.797;
+Zw = -124988.03;
+Zq = -1.263*10^5;
+Zwdot = 4531.747 ;
+Zdeltae = -3.341*10^5;
+
+Mu = 36646.48;
+Mw = -252213.39;
+Mq = -1.394*10^7;
+Mwdot = -18547.34;
+Mdeltae = -3.608*10^7;
+
+<span class="comment">%stability frame stability derivatives</span>
+Xu_s = Xu * cos(zeta)^2 - ((Xw + Zu) * sin(zeta) * cos(zeta))<span class="keyword">...</span>
+    + (Zw * sin(zeta)^2);
+Xw_s = Xw * cos(zeta)^2 + ((Xu - Zw) * sin(zeta) * cos(zeta))<span class="keyword">...</span>
+    - Zu * sin(zeta)^2;
+Xq_s = Xq * cos(zeta) - (Zq * sin(zeta));
+Xwdot_s = -Zwdot * sin(zeta) * cos(zeta);
+
+Zu_s = Zu * cos(zeta)^2 - ((Zw - Xu) * sin(zeta) * cos(zeta))<span class="keyword">...</span>
+    - (Xw * sin(zeta)^2);
+Zw_s = Zw*(cos(zeta))^2 + ((Zu + Xw)*sin(zeta)*cos(zeta)) + (Xu*(sin(zeta))^2);
+Zq_s = Zq*cos(zeta) + (Xq*sin(zeta));
+Zwdot_s =Zwdot*(cos(zeta))^2;
+
+Mu_s = Mu*cos(zeta) - (Mw*sin(zeta));
+Mw_s = Mw*cos(zeta) + (Mu*sin(zeta));
+Mq_s = Mq;
+Mwdot_s = Mwdot*cos(zeta);
+
+<span class="comment">%calculate A matrix</span>
+A11 = Xu_s/m;
+A12 = Xw_s/m;
+A13 = 0;
+A14 = -g*cos(theta_0);
+A21 = Zu_s/(m-Zwdot_s);
+A22 = Zw_s/(m-Zwdot_s);
+A23 = (Zq_s + (m*u0))/(m-Zwdot_s);
+A24 = (-m*g*sin(theta_0))/(m-Zwdot_s);
+A31 = (1/Iy)*(Mu_s + ((Mwdot_s*Zu_s)/(m-Zwdot_s)));
+A32 = (1/Iy)*(Mw_s + ((Mwdot_s*Zw_s)/(m-Zwdot_s)));
+A33 = (1/Iy)*(Mq_s + ((Mwdot_s*(Zq_s + (m*u0)))/(m-Zwdot_s)));
+A34 = -(Mwdot_s*m*g*sin(theta_0))/(Iy*(m-Zwdot_s));
+A41 = 0;
+A42 = 0;
+A43 = 1;
+A44 = 0;
+
+<span class="comment">%A matrix</span>
+A = [A11 A12 A13 A14;<span class="keyword">...</span>
+    A21 A22 A23 A24;<span class="keyword">...</span>
+    A31 A32 A33 A34;<span class="keyword">...</span>
+    A41 A42 A43 A44];
+<span class="comment">%eigenvectors and eigenvalues of A matrix</span>
+[V, D] = eig(A)
+
+<span class="comment">%short period approx</span>
+A_short = [Mq_s/Iy (u0*Mw_s)/Iy ; 1 0];
+eig_short = eig(A_short)
+
+<span class="comment">%phugoid approx</span>
+A_phugoid = [Xu_s/m Xw_s/m 0 -g;<span class="keyword">...</span>
+    Zu_s/m Zw_s/m u0 0;<span class="keyword">...</span>
+    Mu_s Mw_s 0 0;<span class="keyword">...</span>
+    0 0 1 0];
+
+eig_phugoid = eig(A_phugoid)
+</pre><pre class="codeoutput">
+V =
+
+   0.0309 + 0.0119i   0.0309 - 0.0119i  -0.9998 + 0.0000i  -0.9998 + 0.0000i
+   0.9994 + 0.0000i   0.9994 + 0.0000i   0.0140 + 0.0089i   0.0140 - 0.0089i
+   0.0002 + 0.0059i   0.0002 - 0.0059i  -0.0007 + 0.0000i  -0.0007 - 0.0000i
+   0.0052 - 0.0025i   0.0052 + 0.0025i   0.0006 + 0.0086i   0.0006 - 0.0086i
+
+
+D =
+
+  -0.4071 + 0.9358i   0.0000 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i
+   0.0000 + 0.0000i  -0.4071 - 0.9358i   0.0000 + 0.0000i   0.0000 + 0.0000i
+   0.0000 + 0.0000i   0.0000 + 0.0000i  -0.0020 + 0.0839i   0.0000 + 0.0000i
+   0.0000 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i  -0.0020 - 0.0839i
+
+
+eig_short =
+
+  -0.1552 + 0.9337i
+  -0.1552 - 0.9337i
+
+
+eig_phugoid =
+
+   1.0e+03 *
+
+  -0.0002 + 6.3424i
+  -0.0002 - 6.3424i
+  -0.0000 + 0.0001i
+  -0.0000 - 0.0001i
+
+</pre><h2 id="2">Problem 6 - use ode45</h2><pre class="codeinput"><span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; <span class="comment">%seconds</span>
+[t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A),t_span,initials);
+
+figure(1)
+sgtitle(<span class="string">'Trim State, B747-100'</span>);
+
+<span class="comment">%label and title strings for each state</span>
+    ylabel_str = [<span class="string">"x (m)"</span>, <span class="string">"y (m)"</span>, <span class="string">"z (m)"</span>, <span class="string">"bank (rad)"</span>,<span class="string">"elevation (rad)"</span>,<span class="keyword">...</span>
+        <span class="string">"azimuth (rad)"</span>, <span class="string">"u (m/s)"</span>, <span class="string">"v (m/s)"</span>,<span class="string">"w (m/s)"</span>,<span class="string">"roll rate (rad/s)"</span>,<span class="keyword">...</span>
+        <span class="string">"pitch rate (rad/s)"</span>, <span class="string">"yaw rate (rad/s)"</span>];
+
+    title_str = [<span class="string">"x vs t"</span>, <span class="string">"y vs t"</span>, <span class="string">"z vs t"</span>, <span class="string">"bank vs t"</span>, <span class="string">"elevation vs t"</span>,<span class="keyword">...</span>
+        <span class="string">"azimuth vs t"</span>,<span class="string">"u vs t"</span>, <span class="string">"v vs t"</span>, <span class="string">"w vs t"</span>, <span class="string">"p vs t"</span>, <span class="string">"q vs t"</span>, <span class="string">"r vs t"</span>];
+
+    <span class="comment">%plot</span>
+    <span class="keyword">for</span> j = 1:12 <span class="comment">%loop through number of states and plot each</span>
+        subplot(3, 4, j);
+        plot(t, state_vec(:,j));
+        xlabel(<span class="string">'Time (s)'</span>);
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid <span class="string">on</span>
+        hold <span class="string">all</span>;
+    <span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="Assignment7_Main_01.png" alt=""> <h2 id="3">add deviations</h2><pre class="codeinput"><span class="comment">%different deviations in each row</span>
+initials_vec = [0 0 0 0 0 0 10 0 0 0 0 0;<span class="keyword">...</span>
+    0 0 0 0 0 0 0 0 10 0 0 0;<span class="keyword">...</span>
+    0 0 0 0 0 0 0 0 0 0 0.1 0;<span class="keyword">...</span>
+    0 0 0 0 0.1 0 0 0 0 0 0 0];
+legend_str = [<span class="string">"initial u = 10 m/s"</span>; <span class="string">"initial w = 10 m/s"</span>; <span class="string">"initial q = 0.1 rad/s"</span>; <span class="string">"initial theta = 0.1 rad"</span>];
+<span class="comment">%format plots to see everything</span>
+x0=10;
+y0=10;
+width=1000;
+height=400;
+figure(2)
+set(gcf,<span class="string">'position'</span>,[x0,y0,width,height]);
+sgtitle(<span class="string">'Trim State with Deviations, B747-100'</span>);
+
+<span class="keyword">for</span> i = 1:4 <span class="comment">%loop through different deviations</span>
+
+    <span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+    initials = initials_vec(i,:);
+    t_span = [0 50]; <span class="comment">%seconds</span>
+    [t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A),t_span,initials);
+
+
+    <span class="comment">%plot</span>
+    <span class="keyword">for</span> j = 1:12 <span class="comment">%loop through number of states and plot each</span>
+        subplot(3, 4, j);
+        plot(t, state_vec(:,j));
+        xlabel(<span class="string">'Time (s)'</span>);
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid <span class="string">on</span>
+        hold <span class="string">all</span>;
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+<span class="comment">%only display legend on one subplot so data is more clearly presented</span>
+figure(2);
+subplot(3, 4, 4);
+legend(legend_str(1), legend_str(2), legend_str(3), legend_str(4));
+</pre><img vspace="5" hspace="5" src="Assignment7_Main_02.png" alt=""> <h2 id="4">Functions Called</h2><p>The following functions were built and called as apart of this assignment.</p><pre class="language-matlab">
+<span class="keyword">function</span> ddt = g_fun(t,state_vec, A)
+<span class="comment">%% ode function for linearized longitudinal dynamics for B747-100</span>
+
+<span class="comment">%unpack state vector </span>
+
+theta_dev = state_vec(5, 1); <span class="comment">%elevation deviation, rad</span>
+u_dev = state_vec(7, 1); <span class="comment">%x velocity deviation, m/s</span>
+w_dev = state_vec(9, 1); <span class="comment">%z velocity deviation, m/s</span>
+q_dev = state_vec(11, 1);<span class="comment">% roll rate devitaion, rad/s</span>
+
+
+<span class="comment">%combine states into y matrix</span>
+y = [u_dev;w_dev;q_dev;theta_dev];
+
+ydot = A*y;
+
+<span class="comment">%givens</span>
+u0 = 157.886; <span class="comment">%m/s, x-component is the same as airspeed in stability frame</span>
+theta0 = 0; <span class="comment">%radians, trim elevation</span>
+
+
+dx_dev = u_dev*cos(theta0) + w_dev*sin(theta0) - u0*theta_dev*sin(theta0);
+dz_dev = u_dev*cos(theta0) + w_dev*cos(theta0) - u0*theta_dev*cos(theta0);
+
+ddt = [dx_dev; 0; dz_dev; 0; q_dev; 0; ydot(1); 0; ydot(2); ydot(4); ydot(3); 0];
+
+<span class="keyword">end</span>
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3128 - Assignment 07 - Main
+% Dimensional Derivatives / B747-100 dynamics
+%
+%   Author: Margaux McFarland
+%   Collaborators: Robert Redfern
+%   Date: 10/24/19
+   
+close all; clear all; clc;
+
+%givens for B747-100 case II
+zeta = deg2rad(-6.8); %radians, angle from stability frame
+W = 2831737.87; %N, weight
+g = 9.81; %N, gravity
+m = W/g; %kg, mass
+theta_0 = 0; %radians, trim elevation
+V_e = 157.886; %m/s, airspeed
+u0 = V_e; %m/s, x-component is the same as airspeed in stability frame
+%moment of inertias
+Ix = 2.47e7; %kg*m^2
+Iy = 4.49e7;
+Iz = 6.74e7;
+Izx = 1.32e6;
+cd = 0.04; %coefficient of drag
+
+
+%body frame stability derivatives
+Xu = -712.9;
+Xw = 22571.14;
+Xq = 0;
+Xwdot = 0;
+Xdeltae = 3.994*10^4;
+
+Zu = -19592.797;
+Zw = -124988.03;
+Zq = -1.263*10^5;
+Zwdot = 4531.747 ;
+Zdeltae = -3.341*10^5;
+
+Mu = 36646.48;
+Mw = -252213.39;
+Mq = -1.394*10^7;
+Mwdot = -18547.34;
+Mdeltae = -3.608*10^7;
+
+%stability frame stability derivatives
+Xu_s = Xu * cos(zeta)^2 - ((Xw + Zu) * sin(zeta) * cos(zeta))...
+    + (Zw * sin(zeta)^2);
+Xw_s = Xw * cos(zeta)^2 + ((Xu - Zw) * sin(zeta) * cos(zeta))...
+    - Zu * sin(zeta)^2;
+Xq_s = Xq * cos(zeta) - (Zq * sin(zeta));
+Xwdot_s = -Zwdot * sin(zeta) * cos(zeta);
+
+Zu_s = Zu * cos(zeta)^2 - ((Zw - Xu) * sin(zeta) * cos(zeta))...
+    - (Xw * sin(zeta)^2);
+Zw_s = Zw*(cos(zeta))^2 + ((Zu + Xw)*sin(zeta)*cos(zeta)) + (Xu*(sin(zeta))^2);
+Zq_s = Zq*cos(zeta) + (Xq*sin(zeta));
+Zwdot_s =Zwdot*(cos(zeta))^2;
+
+Mu_s = Mu*cos(zeta) - (Mw*sin(zeta));
+Mw_s = Mw*cos(zeta) + (Mu*sin(zeta));
+Mq_s = Mq;
+Mwdot_s = Mwdot*cos(zeta);
+
+%calculate A matrix
+A11 = Xu_s/m;
+A12 = Xw_s/m;
+A13 = 0;
+A14 = -g*cos(theta_0);
+A21 = Zu_s/(m-Zwdot_s);
+A22 = Zw_s/(m-Zwdot_s);
+A23 = (Zq_s + (m*u0))/(m-Zwdot_s);
+A24 = (-m*g*sin(theta_0))/(m-Zwdot_s);
+A31 = (1/Iy)*(Mu_s + ((Mwdot_s*Zu_s)/(m-Zwdot_s)));
+A32 = (1/Iy)*(Mw_s + ((Mwdot_s*Zw_s)/(m-Zwdot_s)));
+A33 = (1/Iy)*(Mq_s + ((Mwdot_s*(Zq_s + (m*u0)))/(m-Zwdot_s)));
+A34 = -(Mwdot_s*m*g*sin(theta_0))/(Iy*(m-Zwdot_s));
+A41 = 0;
+A42 = 0;
+A43 = 1;
+A44 = 0;
+
+%A matrix
+A = [A11 A12 A13 A14;...
+    A21 A22 A23 A24;...
+    A31 A32 A33 A34;...
+    A41 A42 A43 A44];
+%eigenvectors and eigenvalues of A matrix    
+[V, D] = eig(A)
+
+%short period approx
+A_short = [Mq_s/Iy (u0*Mw_s)/Iy ; 1 0];
+eig_short = eig(A_short)
+
+%phugoid approx
+A_phugoid = [Xu_s/m Xw_s/m 0 -g;...
+    Zu_s/m Zw_s/m u0 0;...
+    Mu_s Mw_s 0 0;...
+    0 0 1 0];
+
+eig_phugoid = eig(A_phugoid)
+
+%% Problem 6 - use ode45
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; %seconds
+[t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A),t_span,initials);
+
+figure(1)
+sgtitle('Trim State, B747-100');
+
+%label and title strings for each state
+    ylabel_str = ["x (m)", "y (m)", "z (m)", "bank (rad)","elevation (rad)",...
+        "azimuth (rad)", "u (m/s)", "v (m/s)","w (m/s)","roll rate (rad/s)",...
+        "pitch rate (rad/s)", "yaw rate (rad/s)"];
+        
+    title_str = ["x vs t", "y vs t", "z vs t", "bank vs t", "elevation vs t",...
+        "azimuth vs t","u vs t", "v vs t", "w vs t", "p vs t", "q vs t", "r vs t"];
+        
+    %plot
+    for j = 1:12 %loop through number of states and plot each
+        subplot(3, 4, j);
+        plot(t, state_vec(:,j));
+        xlabel('Time (s)');
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid on
+        hold all;
+    end
+
+%% add deviations
+%different deviations in each row
+initials_vec = [0 0 0 0 0 0 10 0 0 0 0 0;...
+    0 0 0 0 0 0 0 0 10 0 0 0;...
+    0 0 0 0 0 0 0 0 0 0 0.1 0;...
+    0 0 0 0 0.1 0 0 0 0 0 0 0];
+legend_str = ["initial u = 10 m/s"; "initial w = 10 m/s"; "initial q = 0.1 rad/s"; "initial theta = 0.1 rad"];
+%format plots to see everything
+x0=10;
+y0=10;
+width=1000;
+height=400;
+figure(2)
+set(gcf,'position',[x0,y0,width,height]);
+sgtitle('Trim State with Deviations, B747-100');
+
+for i = 1:4 %loop through different deviations
+
+    %state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+    initials = initials_vec(i,:);
+    t_span = [0 50]; %seconds
+    [t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A),t_span,initials);
+    
+        
+    %plot
+    for j = 1:12 %loop through number of states and plot each
+        subplot(3, 4, j);
+        plot(t, state_vec(:,j));
+        xlabel('Time (s)');
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid on
+        hold all;
+    end
+
+end
+%only display legend on one subplot so data is more clearly presented
+figure(2);
+subplot(3, 4, 4);
+legend(legend_str(1), legend_str(2), legend_str(3), legend_str(4));
+
+
+%% Functions Called
+% The following functions were built and called as apart of this
+% assignment.
+%
+% <include>g_fun.m</include>
+%
+##### SOURCE END #####
+--></body></html>

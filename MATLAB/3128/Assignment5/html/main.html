@@ -1,0 +1,828 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-10"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3128 - Assignment 05 - Main</a></li><li><a href="#2">lateral</a></li><li><a href="#3">longitudinal</a></li><li><a href="#4">Part 2 - open loop simulation</a></li><li><a href="#5">Part 3 - compare Mambo copter</a></li><li><a href="#6">Functions Called</a></li></ul></div><h2 id="1">ASEN 3128 - Assignment 05 - Main</h2><pre>Simulation of a mambo quad-copter, implementing feedback control</pre><pre class="language-matlab">Author: Margaux McFarland
+Date: 10/8/19
+</pre><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+
+<span class="comment">%givens</span>
+g = 9.81; <span class="comment">%m/s^2</span>
+Ix = 5.8e-5; <span class="comment">%kgm^2</span>
+Iy = 7.2e-5; <span class="comment">%kgm^2</span>
+Iz = 1.0e-4; <span class="comment">%kgm^2</span>
+</pre><h2 id="2">lateral</h2><pre class="codeinput"><span class="comment">%gains</span>
+K1 = 22*Ix
+K2 = 40*Ix
+N = 300;
+K3 = Ix.*linspace(825,840,N); <span class="comment">%keep trying different ranges until real eigenvalues are found</span>
+<span class="keyword">for</span> i = 1:N
+    <span class="comment">% A matrix</span>
+    A = [-K1/Ix, -K2/Ix, -(K3(i)*K2)/Ix; 1, 0, 0; 0, g, 0];
+    eig_val(:, i) = eig(A); <span class="comment">%eigenvalue matrix</span>
+<span class="keyword">end</span>
+
+eig_val_desired = eig_val(:,192) <span class="comment">%most negative REAL eigenvalue - fastest response</span>
+K3_desired = K3(192)
+
+figure(1)
+hold <span class="string">on</span>
+xline(-0.8, <span class="string">'r'</span>);
+hold <span class="string">on</span>
+xline(0, <span class="string">'k--'</span>);
+hold <span class="string">on</span>
+yline(0, <span class="string">'k--'</span>);
+hold <span class="string">on</span>
+<span class="comment">%plot the eignenvalues that meet conditions</span>
+plot(eig_val_desired(1), 0, <span class="string">'b*'</span>);
+hold <span class="string">on</span>
+plot(eig_val_desired(2), 0, <span class="string">'b*'</span>);
+hold <span class="string">on</span>
+plot(eig_val_desired(3), 0, <span class="string">'b*'</span>);
+grid <span class="string">on</span>
+title(<span class="string">"Lateral"</span>);
+xlabel(<span class="string">'Real Eigenvalues'</span>);
+ylabel(<span class="string">'Complex Eigenvalues'</span>);
+</pre><pre class="codeoutput">
+K1 =
+
+    0.0013
+
+
+K2 =
+
+    0.0023
+
+
+eig_val_desired =
+
+  -20.0525
+   -1.0051
+   -0.9424
+
+
+K3_desired =
+
+    0.0484
+
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="3">longitudinal</h2><pre class="codeinput">K4 = 22*Ix;
+K5 = 40*Ix;
+K6 = Ix.*linspace(-840,-825,N);
+<span class="keyword">for</span> i = 1:N
+    A = [-K4/Ix, -K5/Ix, -(K6(i)*K5)/Ix; 1, 0, 0; 0, -g, 0];
+    eig_val2(:, i) = eig(A); <span class="comment">% eigenvalue matrix</span>
+
+<span class="keyword">end</span>
+<span class="comment">%desired values found by searching eigen value matrix</span>
+eig_val2_desired = eig_val2(:,129) <span class="comment">%most negative REAL eigenvalue - fastest real response</span>
+K6_desired = K6(129)
+
+figure(2)
+xline(-0.8, <span class="string">'r'</span>);
+hold <span class="string">on</span>
+xline(0, <span class="string">'k--'</span>);
+hold <span class="string">on</span>
+yline(0, <span class="string">'k--'</span>);
+hold <span class="string">on</span>
+<span class="comment">%plot the eignenvalues that meet conditions</span>
+plot(eig_val2_desired(1),0,<span class="string">'b*'</span>);
+hold <span class="string">on</span>
+plot(eig_val2_desired(2), 0, <span class="string">'b*'</span>);
+hold <span class="string">on</span>
+plot(eig_val2_desired(3), 0, <span class="string">'b*'</span>);
+grid <span class="string">on</span>
+title(<span class="string">'Longitudinal'</span>)
+xlabel(<span class="string">'Real Eigenvalues'</span>);
+ylabel(<span class="string">'Complex Eigenvalues'</span>);
+</pre><pre class="codeoutput">
+eig_val2_desired =
+
+  -20.0524
+   -1.0205
+   -0.9271
+
+
+K6_desired =
+
+   -0.0483
+
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <h2 id="4">Part 2 - open loop simulation</h2><pre class="codeinput"><span class="comment">%%%%%%%lateral%%%%%%%%%%</span>
+
+g_b = 9.81; <span class="comment">%m/s^2</span>
+m = 0.068; <span class="comment">%kg</span>
+<span class="comment">%controls</span>
+f1 = (g_b*m)/4;
+f2 = (g_b*m)/4;
+f3 = (g_b*m)/4;
+f4 = (g_b*m)/4;
+
+<span class="comment">%response inputs</span>
+u_r_dev = 0;
+v_r_dev = 0.5; <span class="comment">%m/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; <span class="comment">%seconds</span>
+[t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+u = state_vec(:, 7);
+v = state_vec(:, 8);
+
+<span class="comment">%response inputs - try again for 2 m/s</span>
+u_r_dev = 0;
+v_r_dev = 2; <span class="comment">%m/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; <span class="comment">%seconds</span>
+[t2, state_vec2] = ode45(@(t2,state_vec2) g_fun(t2,state_vec2, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+u2 = state_vec2(:, 7);
+v2 = state_vec2(:, 8);
+
+<span class="comment">%find index at 2 seconds</span>
+index = find(t &gt;= 2, 1);
+
+<span class="comment">%plot the behavoir</span>
+figure(3)
+subplot(2,2,1);
+plot(t, x);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'x position (m)'</span>);
+title(<span class="string">'X position over time'</span>);
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+subplot(2,2,2);
+plot(t, y);
+hold <span class="string">on</span>
+plot(t2, y2);
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+plot(t(index), y(index), <span class="string">'r*'</span>);
+hold <span class="string">on</span>
+plot(t(index), y2(index), <span class="string">'b*'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'y position (m)'</span>);
+title(<span class="string">'Y position over time'</span>);
+legend(<span class="string">'input v = 0.5 m/s'</span>, <span class="string">'input v = 2 m/s'</span>);
+hold <span class="string">on</span>
+subplot(2,2,3);
+plot(t, u);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'U, x-component of velocity (m/s)'</span>);
+title(<span class="string">'U over time'</span>);
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+subplot(2,2,4);
+plot(t, v);
+hold <span class="string">on</span>
+plot(t2, v2);
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+plot(t(index), v(index), <span class="string">'r*'</span>);
+hold <span class="string">on</span>
+plot(t(index), v2(index), <span class="string">'b*'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'V, y-component of velocity (m/s)'</span>);
+title(<span class="string">'V over time'</span>);
+legend(<span class="string">'input v = 0.5 m/s'</span>, <span class="string">'input v = 2 m/s'</span>);
+
+<span class="comment">%%%%%%%longitudinal%%%%%%%%%%</span>
+
+g_b = 9.81; <span class="comment">%m/s^2</span>
+m = 0.068; <span class="comment">%kg</span>
+<span class="comment">%controls</span>
+f1 = (g_b*m)/4;
+f2 = (g_b*m)/4;
+f3 = (g_b*m)/4;
+f4 = (g_b*m)/4;
+
+<span class="comment">%response inputs</span>
+u_r_dev = 0.5;
+v_r_dev = 0; <span class="comment">%m/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; <span class="comment">%seconds</span>
+[t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+u = state_vec(:, 7);
+v = state_vec(:, 8);
+
+<span class="comment">%response inputs - try again for 2 m/s</span>
+u_r_dev = 2;
+v_r_dev = 0; <span class="comment">%m/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; <span class="comment">%seconds</span>
+[t2, state_vec2] = ode45(@(t2,state_vec2) g_fun(t2,state_vec2, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+u2 = state_vec2(:, 7);
+v2 = state_vec2(:, 8);
+
+<span class="comment">%find index at 2 seconds</span>
+index = find(t &gt;= 2, 1);
+
+<span class="comment">%plot the behavior</span>
+figure(4)
+subplot(2,2,1);
+plot(t, x);
+hold <span class="string">on</span>
+plot(t2, x2);
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+plot(t(index), x(index), <span class="string">'r*'</span>);
+hold <span class="string">on</span>
+plot(t(index), x2(index), <span class="string">'b*'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'x position (m)'</span>);
+title(<span class="string">'X position over time'</span>);
+legend(<span class="string">'input u = 0.5 m/s'</span>, <span class="string">'input u = 2 m/s'</span>);
+hold <span class="string">on</span>
+subplot(2,2,2);
+plot(t, y);
+hold <span class="string">on</span>
+plot(t2, y2);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'y position (m)'</span>);
+title(<span class="string">'Y position over time'</span>);
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+subplot(2,2,3);
+plot(t, u);
+hold <span class="string">on</span>
+plot(t2, u2);
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+plot(t(index), u(index), <span class="string">'r*'</span>);
+hold <span class="string">on</span>
+plot(t(index), u2(index), <span class="string">'b*'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'U, x-component of velocity (m/s)'</span>);
+title(<span class="string">'U over time'</span>);
+legend(<span class="string">'input u = 0.5 m/s'</span>,<span class="string">'input u = 2 m/s'</span>);
+hold <span class="string">on</span>
+subplot(2,2,4);
+plot(t, v);
+hold <span class="string">on</span>
+plot(t2, v2);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'V, y-component of velocity (m/s)'</span>);
+title(<span class="string">'V over time'</span>);
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <h2 id="5">Part 3 - compare Mambo copter</h2><pre class="codeinput">load <span class="string">RSdata_one_1509.mat</span>
+<span class="comment">%get x, y, u, and v at 2 seconds</span>
+times=rt_estimatedStates.time(:);
+index = find(times &gt;= 2, 1);
+x_data = rt_estimatedStates.signals.values(:,1);
+y_data = rt_estimatedStates.signals.values(:,2);
+u_data = rt_estimatedStates.signals.values(:,7);
+v_data = rt_estimatedStates.signals.values(:,8);
+
+<span class="comment">%simulation with both lateral and longitudinal velocoity inputs</span>
+
+<span class="comment">%response inputs</span>
+u_r_dev = 0.5;
+v_r_dev = -0.5; <span class="comment">%m/s</span>
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; <span class="comment">%seconds</span>
+[t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+u = state_vec(:, 7);
+v = state_vec(:, 8);
+
+<span class="comment">% plot mambo data</span>
+figure(5)
+subplot(2,2,1);
+plot(times, x_data);
+hold <span class="string">on</span>
+plot(t, x);
+grid <span class="string">on</span>
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'X position (m)'</span>);
+title(<span class="string">'X position over time'</span>);
+legend(<span class="string">'Mambo response'</span>,<span class="string">'Model Response'</span>);
+hold <span class="string">on</span>
+subplot(2,2,2);
+plot(times, y_data);
+hold <span class="string">on</span>
+plot(t, y);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'Y position (m)'</span>);
+title(<span class="string">'Y position over time'</span>);
+legend(<span class="string">'Mambo response'</span>,<span class="string">'Model Response'</span>);
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+subplot(2,2,3);
+plot(times, u_data);
+hold <span class="string">on</span>
+plot(t, u);
+grid <span class="string">on</span>
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'U, x-component of velocity (m/s)'</span>);
+title(<span class="string">'U over time'</span>);
+legend(<span class="string">'Mambo response'</span>,<span class="string">'Model Response'</span>);
+hold <span class="string">on</span>
+subplot(2,2,4);
+plot(times, v_data);
+hold <span class="string">on</span>
+plot(t, v);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'V, y-component of velocity (m/s)'</span>);
+title(<span class="string">'V over time'</span>);
+legend(<span class="string">'Mambo response'</span>,<span class="string">'Model Response'</span>);
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="main_05.png" alt=""> <h2 id="6">Functions Called</h2><p>The following functions were built and called as apart of this assignment.</p><pre class="language-matlab">
+<span class="keyword">function</span> ddt = g_fun(t,state_vec, f1, f2, f3, f4, u_r_dev, v_r_dev,t_stop)
+<span class="comment">%% ode function for part 2 (linearized, with open loop control)</span>
+
+<span class="comment">%givens</span>
+m = 0.068; <span class="comment">%kg</span>
+rad = 0.06; <span class="comment">%m</span>
+Ix = 5.8e-5; <span class="comment">%kgm^2</span>
+Iy = 7.2e-5; <span class="comment">%kgm^2</span>
+Iz = 1.0e-4; <span class="comment">%kgm^2</span>
+g_b = [0; 0; 9.81]; <span class="comment">%m/s^2</span>
+k = 0.0024; <span class="comment">%Nm/N</span>
+
+<span class="comment">%lateral gains</span>
+K1 = 22*Ix; <span class="comment">% controls roll rate</span>
+K2 = 40*Ix; <span class="comment">% controls bank</span>
+K3 = 0.0484; <span class="comment">% controls inertial velcoity in y direction, v</span>
+<span class="comment">%longitudinal gains</span>
+K4 = 22*Iy; <span class="comment">% controls pitch rate</span>
+K5 = 40*Iy; <span class="comment">% controls elevation</span>
+K6 = -0.0483; <span class="comment">% controls inertial velcoity in x direction, u</span>
+<span class="comment">%azimuth gain</span>
+K7 = 0.004; <span class="comment">%Nm/(rad/s) </span>
+
+<span class="comment">%unpack state vector - all state variables are equal to their deviations in</span>
+<span class="comment">%steady hover</span>
+x_dev = state_vec(1, 1);
+y_dev = state_vec(2, 1);
+z_dev = state_vec(3, 1);
+phi_dev = state_vec(4, 1);
+theta_dev = state_vec(5, 1);
+xi_dev = state_vec(6, 1);
+u_dev = state_vec(7, 1);
+v_dev = state_vec(8, 1);
+w_dev = state_vec(9, 1);
+p_dev = state_vec(10, 1);
+q_dev = state_vec(11, 1);
+r_dev = state_vec(12, 1);
+
+<span class="comment">%deviations</span>
+f1_dev = 0;
+f2_dev = 0;
+f3_dev = 0;
+f4_dev = 0;
+
+<span class="comment">%check if after 2 seconds, then set response velocities to zero</span>
+<span class="comment">%only do this when response velocitities stop</span>
+<span class="keyword">if</span> t_stop &amp;&amp; t &gt;= 2
+    v_r_dev = 0;
+    u_r_dev = 0;
+<span class="keyword">end</span>
+
+<span class="comment">%difference here is including the velocity inputs</span>
+Lc_dev = K2*(K3*(v_r_dev - v_dev) - phi_dev) - K1*p_dev;
+Mc_dev = K5*(K6*(u_r_dev - u_dev) - theta_dev) - K4*q_dev;
+Nc_dev = -K7*r_dev;
+Zc_dev = (f1_dev + f2_dev + f3_dev + f4_dev);
+
+<span class="comment">% longitudinal</span>
+dq_dev = (1/Iy)*Mc_dev;
+dtheta_dev = q_dev;
+du_dev = -g_b(3)*theta_dev;
+<span class="comment">% lateral</span>
+dp_dev = (1/Ix)*Lc_dev;
+dphi_dev = p_dev;
+dv_dev = g_b(3)*phi_dev;
+<span class="comment">% azimuth</span>
+dr_dev = (1/Iz)*Nc_dev;
+<span class="comment">% vertical</span>
+dw_dev = (1/m)*Zc_dev;
+
+Zc = Zc_dev + (f1 + f2 + f3 + f4)*(cos(theta_dev)*cos(phi_dev)); <span class="comment">%N</span>
+
+
+ddt = [u_dev; v_dev; w_dev; p_dev; q_dev; r_dev; du_dev; dv_dev; dw_dev + Zc - m*g_b(3); dp_dev; dq_dev; dr_dev];
+
+<span class="keyword">end</span>
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3128 - Assignment 05 - Main
+%  Simulation of a mambo quad-copter, implementing feedback control
+%
+%   Author: Margaux McFarland
+%   Date: 10/8/19
+
+clc
+clear all
+close all
+
+%givens
+g = 9.81; %m/s^2
+Ix = 5.8e-5; %kgm^2
+Iy = 7.2e-5; %kgm^2
+Iz = 1.0e-4; %kgm^2
+
+%% lateral
+%gains
+K1 = 22*Ix
+K2 = 40*Ix
+N = 300;
+K3 = Ix.*linspace(825,840,N); %keep trying different ranges until real eigenvalues are found
+for i = 1:N
+    % A matrix
+    A = [-K1/Ix, -K2/Ix, -(K3(i)*K2)/Ix; 1, 0, 0; 0, g, 0];
+    eig_val(:, i) = eig(A); %eigenvalue matrix
+end
+
+eig_val_desired = eig_val(:,192) %most negative REAL eigenvalue - fastest response
+K3_desired = K3(192) 
+
+figure(1)
+hold on
+xline(-0.8, 'r');
+hold on
+xline(0, 'kREPLACE_WITH_DASH_DASH');
+hold on
+yline(0, 'kREPLACE_WITH_DASH_DASH');
+hold on
+%plot the eignenvalues that meet conditions
+plot(eig_val_desired(1), 0, 'b*');
+hold on
+plot(eig_val_desired(2), 0, 'b*');
+hold on
+plot(eig_val_desired(3), 0, 'b*');
+grid on
+title("Lateral");
+xlabel('Real Eigenvalues');
+ylabel('Complex Eigenvalues');
+
+%% longitudinal
+K4 = 22*Ix;
+K5 = 40*Ix;
+K6 = Ix.*linspace(-840,-825,N);
+for i = 1:N
+    A = [-K4/Ix, -K5/Ix, -(K6(i)*K5)/Ix; 1, 0, 0; 0, -g, 0];
+    eig_val2(:, i) = eig(A); % eigenvalue matrix
+    
+end
+%desired values found by searching eigen value matrix
+eig_val2_desired = eig_val2(:,129) %most negative REAL eigenvalue - fastest real response
+K6_desired = K6(129)
+
+figure(2)
+xline(-0.8, 'r');
+hold on
+xline(0, 'kREPLACE_WITH_DASH_DASH');
+hold on
+yline(0, 'kREPLACE_WITH_DASH_DASH');
+hold on
+%plot the eignenvalues that meet conditions
+plot(eig_val2_desired(1),0,'b*');
+hold on
+plot(eig_val2_desired(2), 0, 'b*');
+hold on
+plot(eig_val2_desired(3), 0, 'b*');
+grid on
+title('Longitudinal')
+xlabel('Real Eigenvalues');
+ylabel('Complex Eigenvalues');
+
+%% Part 2 - open loop simulation
+
+%%%%%%%lateral%%%%%%%%%%
+
+g_b = 9.81; %m/s^2
+m = 0.068; %kg
+%controls
+f1 = (g_b*m)/4;
+f2 = (g_b*m)/4;
+f3 = (g_b*m)/4;
+f4 = (g_b*m)/4;
+
+%response inputs 
+u_r_dev = 0;
+v_r_dev = 0.5; %m/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; %seconds
+[t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+u = state_vec(:, 7);
+v = state_vec(:, 8);
+
+%response inputs - try again for 2 m/s
+u_r_dev = 0;
+v_r_dev = 2; %m/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; %seconds
+[t2, state_vec2] = ode45(@(t2,state_vec2) g_fun(t2,state_vec2, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+u2 = state_vec2(:, 7);
+v2 = state_vec2(:, 8);
+
+%find index at 2 seconds
+index = find(t >= 2, 1);
+
+%plot the behavoir 
+figure(3)
+subplot(2,2,1);
+plot(t, x);
+xlabel('Time (s)');
+ylabel('x position (m)');
+title('X position over time');
+grid on
+hold on
+subplot(2,2,2);
+plot(t, y);
+hold on
+plot(t2, y2);
+grid on
+hold on
+plot(t(index), y(index), 'r*');
+hold on
+plot(t(index), y2(index), 'b*');
+xlabel('Time (s)');
+ylabel('y position (m)');
+title('Y position over time');
+legend('input v = 0.5 m/s', 'input v = 2 m/s');
+hold on
+subplot(2,2,3);
+plot(t, u);
+xlabel('Time (s)');
+ylabel('U, x-component of velocity (m/s)');
+title('U over time');
+grid on
+hold on
+subplot(2,2,4);
+plot(t, v);
+hold on
+plot(t2, v2);
+grid on
+hold on
+plot(t(index), v(index), 'r*');
+hold on
+plot(t(index), v2(index), 'b*');
+xlabel('Time (s)');
+ylabel('V, y-component of velocity (m/s)');
+title('V over time');
+legend('input v = 0.5 m/s', 'input v = 2 m/s');
+
+%%%%%%%longitudinal%%%%%%%%%%
+
+g_b = 9.81; %m/s^2
+m = 0.068; %kg
+%controls
+f1 = (g_b*m)/4;
+f2 = (g_b*m)/4;
+f3 = (g_b*m)/4;
+f4 = (g_b*m)/4;
+
+%response inputs 
+u_r_dev = 0.5;
+v_r_dev = 0; %m/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; %seconds
+[t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+u = state_vec(:, 7);
+v = state_vec(:, 8);
+
+%response inputs - try again for 2 m/s
+u_r_dev = 2;
+v_r_dev = 0; %m/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; %seconds
+[t2, state_vec2] = ode45(@(t2,state_vec2) g_fun(t2,state_vec2, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+u2 = state_vec2(:, 7);
+v2 = state_vec2(:, 8);
+
+%find index at 2 seconds
+index = find(t >= 2, 1);
+
+%plot the behavior 
+figure(4)
+subplot(2,2,1);
+plot(t, x);
+hold on
+plot(t2, x2);
+grid on
+hold on
+plot(t(index), x(index), 'r*');
+hold on
+plot(t(index), x2(index), 'b*');
+xlabel('Time (s)');
+ylabel('x position (m)');
+title('X position over time');
+legend('input u = 0.5 m/s', 'input u = 2 m/s');
+hold on
+subplot(2,2,2);
+plot(t, y);
+hold on
+plot(t2, y2);
+xlabel('Time (s)');
+ylabel('y position (m)');
+title('Y position over time');
+grid on
+hold on
+subplot(2,2,3);
+plot(t, u);
+hold on
+plot(t2, u2);
+grid on
+hold on
+plot(t(index), u(index), 'r*');
+hold on
+plot(t(index), u2(index), 'b*');
+xlabel('Time (s)');
+ylabel('U, x-component of velocity (m/s)');
+title('U over time');
+legend('input u = 0.5 m/s','input u = 2 m/s');
+hold on
+subplot(2,2,4);
+plot(t, v);
+hold on
+plot(t2, v2);
+xlabel('Time (s)');
+ylabel('V, y-component of velocity (m/s)');
+title('V over time');
+grid on
+
+%% Part 3 - compare Mambo copter
+
+load RSdata_one_1509.mat
+%get x, y, u, and v at 2 seconds
+times=rt_estimatedStates.time(:);
+index = find(times >= 2, 1);
+x_data = rt_estimatedStates.signals.values(:,1);
+y_data = rt_estimatedStates.signals.values(:,2);
+u_data = rt_estimatedStates.signals.values(:,7);
+v_data = rt_estimatedStates.signals.values(:,8);
+
+%simulation with both lateral and longitudinal velocoity inputs
+
+%response inputs 
+u_r_dev = 0.5;
+v_r_dev = -0.5; %m/s
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 0 0 0 0 0 0 0 0 0];
+t_span = [0 10]; %seconds
+[t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, f1, f2, f3, f4, u_r_dev, v_r_dev, 1),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+u = state_vec(:, 7);
+v = state_vec(:, 8);
+
+% plot mambo data
+figure(5)
+subplot(2,2,1);
+plot(times, x_data);
+hold on 
+plot(t, x);
+grid on
+xlabel('Time (s)');
+ylabel('X position (m)');
+title('X position over time');
+legend('Mambo response','Model Response');
+hold on
+subplot(2,2,2);
+plot(times, y_data);
+hold on 
+plot(t, y);
+xlabel('Time (s)');
+ylabel('Y position (m)');
+title('Y position over time');
+legend('Mambo response','Model Response');
+grid on
+hold on
+subplot(2,2,3);
+plot(times, u_data);
+hold on 
+plot(t, u);
+grid on
+xlabel('Time (s)');
+ylabel('U, x-component of velocity (m/s)');
+title('U over time');
+legend('Mambo response','Model Response');
+hold on
+subplot(2,2,4);
+plot(times, v_data);
+hold on 
+plot(t, v);
+xlabel('Time (s)');
+ylabel('V, y-component of velocity (m/s)');
+title('V over time');
+legend('Mambo response','Model Response');
+grid on
+
+%% Functions Called
+% The following functions were built and called as apart of this
+% assignment.
+%
+% <include>g_fun.m</include>
+%
+%
+
+
+##### SOURCE END #####
+--></body></html>

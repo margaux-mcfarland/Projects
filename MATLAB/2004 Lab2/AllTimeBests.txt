@@ -1,0 +1,14 @@
+
+Trial 1 of 1
+Initial Conditions:
+P_Gauge: 275790 Pa, Water Vol: 1.000 L, Launch Angle: 45.00 deg, Drag Coefficient: 0.300
+Results: 
+Max height: 0.00 m, Max distance: 57.74 m, Flight time: 3.48 s
+
+
+Trial 1 of 1
+Initial Conditions:
+P_Gauge: 275790 Pa, Water Vol: 1.000 L, Launch Angle: 45.00 deg, Drag Coefficient: 0.300
+Results: 
+Max height: 0.00 m, Max distance: 57.74 m, Flight time: 3.48 s
+

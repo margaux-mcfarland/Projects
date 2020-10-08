@@ -1,0 +1,431 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-11-20"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3128 - Assignment 10 - Main</a></li><li><a href="#2">Problem 1</a></li><li><a href="#3">Problem 2</a></li><li><a href="#4">Problem 3</a></li><li><a href="#5">Problem 4</a></li><li><a href="#6">Problem 5</a></li><li><a href="#7">Functions Called</a></li></ul></div><h2 id="1">ASEN 3128 - Assignment 10 - Main</h2><p>Lateral Dimensional Derivatives / B747-100 dynamics</p><pre class="language-matlab">Author: Margaux McFarland
+Collaborators:
+Date: 11/20/19
+</pre><pre class="codeinput">clc;
+clear;
+close <span class="string">all</span>;
+
+<span class="comment">%B-747 givens (Case II)</span>
+W = 2831737.87; <span class="comment">%N, weight</span>
+g = 9.81; <span class="comment">%N, gravity</span>
+m = W/g; <span class="comment">%kg, mass</span>
+rho = 0.6530; <span class="comment">%air density, kg/m^3</span>
+u0 = 157.886; <span class="comment">%V=u in stability frame, airspeed, m/s</span>
+S = 510; <span class="comment">%planform area, m^2</span>
+b = 59.6433; <span class="comment">%span, m</span>
+theta0 = 0; <span class="comment">%radians</span>
+zeta = deg2rad(-6.8); <span class="comment">%radians</span>
+<span class="comment">%moment of inertias</span>
+Ix = 2.4676e7; <span class="comment">%kg*m^2</span>
+Iy = 4.4878e7;
+Iz = 6.7384e7;
+Izx = 1.3151e6;
+</pre><h2 id="2">Problem 1</h2><pre class="codeinput"><span class="comment">%coefficients from table 6.7</span>
+Cyb = -0.8771;
+Cyp = 0;
+Cyr = 0;
+Clb = -0.2797;
+Clp = -0.3295;
+Clr = 0.304;
+Cnb = 0.1946;
+Cnp = -0.04073;
+Cnr = -0.2737;
+
+<span class="comment">%dimensionalize stability derivates using table 4.5</span>
+Yv = (1/2)*rho*u0*S*Cyb;
+Yp = (1/4)*rho*u0*b*S*Cyp;
+Yr = (1/4)*rho*u0*b*S*Cyr;
+
+Lv = (1/2)*rho*u0*S*b*Clb;
+Lp = (1/4)*rho*u0*b^2*S*Clp;
+Lr = (1/4)*rho*u0*b^2*S*Clr;
+
+Nv = (1/2)*rho*u0*S*b*Cnb;
+Np = (1/4)*rho*u0*b^2*S*Cnp;
+Nr = (1/4)*rho*u0*b^2*S*Cnr;
+
+mat = [Yv Lv Nv; Yp Lp Np; Yr Lr Nr];
+</pre><h2 id="3">Problem 2</h2><pre class="codeinput"><span class="comment">%convert to stability frame</span>
+Yv_s = Yv;
+Yp_s = Yp*cos(zeta);
+Yr_s = Yr*cos(zeta) + Yp*sin(zeta);
+
+Lv_s = Lv*cos(zeta) - Nv*sin(zeta);
+Lp_s = Lp*cos(zeta)^2 - (Lr + Np)*sin(zeta)*cos(zeta) + Nr*sin(zeta)^2;
+Lr_s = Lr*cos(zeta)^2 - (Nr - Lp)*sin(zeta)*cos(zeta) - Np*sin(zeta)^2;
+
+Nv_s = Nv*cos(zeta) + Lv*sin(zeta);
+Np_s = Np*cos(zeta)^2 - (Nr - Lp)*sin(zeta)*cos(zeta) - Lr*sin(zeta)^2;
+Nr_s = Nr*cos(zeta)^2 + (Lr + Np)*sin(zeta)*cos(zeta) + Lp*sin(zeta)^2;
+
+mat2 = [Yv_s Lv_s Nv_s; Yp_s Lp_s Np_s; Yr_s Lr_s Nr_s];
+
+Ix_s = Ix*cos(zeta)^2 + Iz*sin(zeta)^2 + Izx*sin(2*zeta);
+Iz_s = Ix*sin(zeta)^2 + Iz*cos(zeta)^2 - Izx*sin(2*zeta);
+Izx_s = -((1/2)*(Ix - Iz)*sin(2*zeta) + Izx*(sin(zeta)^2 - cos(zeta)^2));
+
+
+<span class="comment">%prime coefficients</span>
+Ix_prime = (Ix_s*Iz_s - Izx_s^2)/Iz_s;
+Iz_prime = (Ix_s*Iz_s - Izx_s^2)/Ix_s;
+Izx_prime = Izx_s/(Ix_s*Iz_s - Izx_s^2);
+
+<span class="comment">%calculate A matrix</span>
+A11 = Yv_s/m;
+A12 = Yp_s/m;
+A13 = (Yr_s/m)-u0;
+A14 = g*cos(theta0);
+A21 = (Lv_s/Ix_prime)+(Izx_prime*Nv_s);
+A22 = (Lp_s/Ix_prime) + (Izx_prime*Np_s);
+A23 = (Lr_s/Ix_prime) + (Izx_prime*Nr_s);
+A24 = 0;
+A31 = (Lv_s*Izx_prime) + (Nv_s/Iz_prime);
+A32 = (Lp_s*Izx_prime) + (Np_s/Iz_prime);
+A33 = (Lr_s*Izx_prime) + (Nr_s/Iz_prime);
+A34 = 0;
+A41 = 0;
+A42 = 1;
+A43 = tan(theta0);
+A44 = 0;
+
+<span class="comment">%A matrix</span>
+A = [A11 A12 A13 A14;<span class="keyword">...</span>
+    A21 A22 A23 A24;<span class="keyword">...</span>
+    A31 A32 A33 A34;<span class="keyword">...</span>
+    A41 A42 A43 A44];
+
+<span class="comment">%eigenvalues</span>
+[evec, evals] = eig(A);
+</pre><h2 id="4">Problem 3</h2><pre class="codeinput"><span class="comment">%time constants (1/s)</span>
+tau1 = -1/real(evals(1,1))
+tau2 = -1/evals(3,3)
+tau3 = -1/evals(4,4)
+
+<span class="comment">%natural frequency of dutch roll</span>
+wn = sqrt(real(evals(1,1))^2 + imag(evals(1,1))^2);
+<span class="comment">%damping ratio</span>
+damp_ratio = -real(evals(1,1))/wn;
+</pre><pre class="codeoutput">
+tau1 =
+
+    9.9356
+
+
+tau2 =
+
+    1.4729
+
+
+tau3 =
+
+  196.1707
+
+</pre><h2 id="5">Problem 4</h2><pre class="codeinput"><span class="comment">%dutch roll approximation</span>
+mat_approx = [A11 -u0; A31 A33];
+eig_approx = eig(mat_approx);
+</pre><h2 id="6">Problem 5</h2><pre class="codeinput"><span class="comment">%label and title strings for each state</span>
+ylabel_str = [<span class="string">"v (m/s)"</span>,<span class="string">"roll rate (rad/s)"</span>, <span class="string">"yaw rate (rad/s)"</span>,<span class="string">"bank (rad)"</span>];
+
+title_str = [<span class="string">"v vs t"</span>,<span class="string">"p vs t"</span>,<span class="string">"r vs t"</span>,<span class="string">"bank vs t"</span>];
+
+<span class="comment">%vector of initial deviations from trim for each case</span>
+dev_vec = [10 0 0 0; 0 0.15 0 0; -1.8563 -0.4185 0.0311 0.6148;<span class="keyword">...</span>
+    2.9477 -0.0063 0.0758 1.2431];
+
+<span class="comment">%verify equilibirum</span>
+<span class="comment">%state_vec = [v; p; r; phi];</span>
+    initials = [0 0 0 0];
+    t_span = [0 50]; <span class="comment">%seconds</span>
+    [t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A),t_span,initials);
+    <span class="comment">%plot</span>
+    figure(1)
+    sgtitle(<span class="string">"B747-100 No Deviations Case"</span>);
+
+    <span class="keyword">for</span> j = 1:4 <span class="comment">%loop through number of lateral states and plot each</span>
+        subplot(2, 2, j);
+        plot(t, state_vec(:,j));
+        xlabel(<span class="string">'Time (s)'</span>);
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid <span class="string">on</span>
+        hold <span class="string">all</span>;
+    <span class="keyword">end</span>
+
+
+<span class="comment">%loop through each case with varying deviations from trim</span>
+<span class="keyword">for</span> i = 1:4
+    <span class="comment">%state_vec = [v; p; r; phi];</span>
+    initials = dev_vec(i,:);
+    t_span = [0 100]; <span class="comment">%seconds</span>
+    [t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A),t_span,initials);
+    <span class="comment">%plot</span>
+    figure(1 + i)
+    sgtitle(<span class="string">"B747-100 Case "</span> +  i);
+
+    <span class="keyword">for</span> j = 1:4 <span class="comment">%loop through number of lateral states and plot each</span>
+        subplot(2, 2, j);
+        plot(t, state_vec(:,j));
+        xlabel(<span class="string">'Time (s)'</span>);
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid <span class="string">on</span>
+        hold <span class="string">all</span>;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <img vspace="5" hspace="5" src="main_02.png" alt=""> <img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <img vspace="5" hspace="5" src="main_05.png" alt=""> <h2 id="7">Functions Called</h2><p>The following functions were built and called as apart of this assignment.</p><pre class="language-matlab">
+<span class="keyword">function</span> ydot = g_fun(t,state_vec, A)
+<span class="comment">%ode function to find the lateral states</span>
+    ydot = A*state_vec;
+<span class="keyword">end</span>
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3128 - Assignment 10 - Main
+% Lateral Dimensional Derivatives / B747-100 dynamics
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 11/20/19
+
+clc;
+clear;
+close all;
+
+%B-747 givens (Case II)
+W = 2831737.87; %N, weight
+g = 9.81; %N, gravity
+m = W/g; %kg, mass
+rho = 0.6530; %air density, kg/m^3
+u0 = 157.886; %V=u in stability frame, airspeed, m/s
+S = 510; %planform area, m^2
+b = 59.6433; %span, m
+theta0 = 0; %radians
+zeta = deg2rad(-6.8); %radians
+%moment of inertias
+Ix = 2.4676e7; %kg*m^2
+Iy = 4.4878e7;
+Iz = 6.7384e7;
+Izx = 1.3151e6;
+%% Problem 1
+%coefficients from table 6.7
+Cyb = -0.8771;
+Cyp = 0;
+Cyr = 0;
+Clb = -0.2797;
+Clp = -0.3295;
+Clr = 0.304;
+Cnb = 0.1946;
+Cnp = -0.04073;
+Cnr = -0.2737;
+
+%dimensionalize stability derivates using table 4.5
+Yv = (1/2)*rho*u0*S*Cyb;
+Yp = (1/4)*rho*u0*b*S*Cyp;
+Yr = (1/4)*rho*u0*b*S*Cyr;
+
+Lv = (1/2)*rho*u0*S*b*Clb;
+Lp = (1/4)*rho*u0*b^2*S*Clp;
+Lr = (1/4)*rho*u0*b^2*S*Clr;
+
+Nv = (1/2)*rho*u0*S*b*Cnb;
+Np = (1/4)*rho*u0*b^2*S*Cnp;
+Nr = (1/4)*rho*u0*b^2*S*Cnr;
+
+mat = [Yv Lv Nv; Yp Lp Np; Yr Lr Nr];
+%% Problem 2
+%convert to stability frame
+Yv_s = Yv;
+Yp_s = Yp*cos(zeta);
+Yr_s = Yr*cos(zeta) + Yp*sin(zeta);
+
+Lv_s = Lv*cos(zeta) - Nv*sin(zeta);
+Lp_s = Lp*cos(zeta)^2 - (Lr + Np)*sin(zeta)*cos(zeta) + Nr*sin(zeta)^2;
+Lr_s = Lr*cos(zeta)^2 - (Nr - Lp)*sin(zeta)*cos(zeta) - Np*sin(zeta)^2;
+
+Nv_s = Nv*cos(zeta) + Lv*sin(zeta);
+Np_s = Np*cos(zeta)^2 - (Nr - Lp)*sin(zeta)*cos(zeta) - Lr*sin(zeta)^2;
+Nr_s = Nr*cos(zeta)^2 + (Lr + Np)*sin(zeta)*cos(zeta) + Lp*sin(zeta)^2;
+
+mat2 = [Yv_s Lv_s Nv_s; Yp_s Lp_s Np_s; Yr_s Lr_s Nr_s];
+
+Ix_s = Ix*cos(zeta)^2 + Iz*sin(zeta)^2 + Izx*sin(2*zeta);
+Iz_s = Ix*sin(zeta)^2 + Iz*cos(zeta)^2 - Izx*sin(2*zeta);
+Izx_s = -((1/2)*(Ix - Iz)*sin(2*zeta) + Izx*(sin(zeta)^2 - cos(zeta)^2));
+
+
+%prime coefficients
+Ix_prime = (Ix_s*Iz_s - Izx_s^2)/Iz_s;
+Iz_prime = (Ix_s*Iz_s - Izx_s^2)/Ix_s;
+Izx_prime = Izx_s/(Ix_s*Iz_s - Izx_s^2);
+
+%calculate A matrix
+A11 = Yv_s/m;
+A12 = Yp_s/m;
+A13 = (Yr_s/m)-u0;
+A14 = g*cos(theta0);
+A21 = (Lv_s/Ix_prime)+(Izx_prime*Nv_s);
+A22 = (Lp_s/Ix_prime) + (Izx_prime*Np_s);
+A23 = (Lr_s/Ix_prime) + (Izx_prime*Nr_s);
+A24 = 0;
+A31 = (Lv_s*Izx_prime) + (Nv_s/Iz_prime);
+A32 = (Lp_s*Izx_prime) + (Np_s/Iz_prime);
+A33 = (Lr_s*Izx_prime) + (Nr_s/Iz_prime);
+A34 = 0;
+A41 = 0;
+A42 = 1;
+A43 = tan(theta0);
+A44 = 0;
+
+%A matrix
+A = [A11 A12 A13 A14;...
+    A21 A22 A23 A24;...
+    A31 A32 A33 A34;...
+    A41 A42 A43 A44];
+
+%eigenvalues
+[evec, evals] = eig(A);
+%% Problem 3
+%time constants (1/s)
+tau1 = -1/real(evals(1,1))
+tau2 = -1/evals(3,3)
+tau3 = -1/evals(4,4)
+
+%natural frequency of dutch roll
+wn = sqrt(real(evals(1,1))^2 + imag(evals(1,1))^2);
+%damping ratio
+damp_ratio = -real(evals(1,1))/wn;
+
+%% Problem 4
+%dutch roll approximation 
+mat_approx = [A11 -u0; A31 A33];
+eig_approx = eig(mat_approx);
+
+%% Problem 5
+
+%label and title strings for each state
+ylabel_str = ["v (m/s)","roll rate (rad/s)", "yaw rate (rad/s)","bank (rad)"];
+
+title_str = ["v vs t","p vs t","r vs t","bank vs t"];
+
+%vector of initial deviations from trim for each case
+dev_vec = [10 0 0 0; 0 0.15 0 0; -1.8563 -0.4185 0.0311 0.6148;...
+    2.9477 -0.0063 0.0758 1.2431];
+
+%verify equilibirum
+%state_vec = [v; p; r; phi];
+    initials = [0 0 0 0];
+    t_span = [0 50]; %seconds
+    [t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A),t_span,initials);
+    %plot
+    figure(1)
+    sgtitle("B747-100 No Deviations Case");
+
+    for j = 1:4 %loop through number of lateral states and plot each
+        subplot(2, 2, j);
+        plot(t, state_vec(:,j));
+        xlabel('Time (s)');
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid on
+        hold all;
+    end
+
+
+%loop through each case with varying deviations from trim
+for i = 1:4
+    %state_vec = [v; p; r; phi];
+    initials = dev_vec(i,:);
+    t_span = [0 100]; %seconds
+    [t, state_vec] = ode45(@(t,state_vec) g_fun(t,state_vec, A),t_span,initials);
+    %plot
+    figure(1 + i)
+    sgtitle("B747-100 Case " +  i);
+
+    for j = 1:4 %loop through number of lateral states and plot each
+        subplot(2, 2, j);
+        plot(t, state_vec(:,j));
+        xlabel('Time (s)');
+        ylabel(ylabel_str(:,j));
+        title(title_str(:,j));
+        grid on
+        hold all;
+    end
+end
+
+ %% Functions Called
+% The following functions were built and called as apart of this
+% assignment.
+%
+% <include>g_fun.m</include>
+%
+
+##### SOURCE END #####
+--></body></html>

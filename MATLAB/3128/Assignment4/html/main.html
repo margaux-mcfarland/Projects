@@ -1,0 +1,1213 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-03"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3128 - Assignment 04 - Main</a></li><li><a href="#2">Part 2 - control law with linearized model</a></li><li><a href="#3">Part 3 - control law with non-linearized model</a></li><li><a href="#4">Part 4 - Rolling Spider Quad Copter</a></li><li><a href="#5">other functions</a></li><li><a href="#6">ode function for part 1/2 (linearized, with control law)</a></li><li><a href="#8">ode function for part 2 (non-linearized)</a></li></ul></div><h2 id="1">ASEN 3128 - Assignment 04 - Main</h2><pre>Simulation of a quad-copter, implementing feedback control</pre><pre class="language-matlab">Author: Margaux McFarland
+Date: 10/3/19
+</pre><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+</pre><h2 id="2">Part 2 - control law with linearized model</h2><pre class="codeinput">g_b = -9.81; <span class="comment">%m/s^2</span>
+m = 0.068; <span class="comment">%kg</span>
+<span class="comment">%controls</span>
+f1 = (-g_b*m)/4;
+f2 = (-g_b*m)/4;
+f3 = (-g_b*m)/4;
+f4 = (-g_b*m)/4;
+
+<span class="comment">%%%%%%%%%% deviation in roll rate %%%%%%%%%%%%%%%</span>
+phi_dev = 0; <span class="comment">%bank, radians</span>
+theta_dev = 0; <span class="comment">%pitch, radians</span>
+xi_dev = 0; <span class="comment">%azimuth, radians</span>
+p_dev = 0.1; <span class="comment">%roll rate, rad/s</span>
+q_dev = 0; <span class="comment">%pitch rate, rad/s</span>
+r_dev = 0; <span class="comment">%yaw rate, rad/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials2 = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; <span class="comment">%seconds</span>
+[t, state_vec2] = ode45(@(t,state_vec2) g_fun(t,state_vec2, f1, f2, f3, f4),t_span,initials2);
+
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+z2 = state_vec2(:, 3);
+p = state_vec2(: ,10);
+
+<span class="comment">%find index at 0.5 seconds (time constant)</span>
+index = find(t &gt;= 0.5, 1);
+
+figure(1);
+subplot(2, 2, 3);
+plot3(x2, y2, z2);
+hold <span class="string">on</span>
+plot3(x2(index),y2(index),z2(index), <span class="string">'r*'</span>);
+title(<span class="string">'Linearized Model: +0.1 rad/s roll rate'</span>);
+xlabel(<span class="string">'North (m)'</span>);
+ylabel(<span class="string">'East (m)'</span>);
+zlabel(<span class="string">'Down (m)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%plot the roll rate</span>
+figure(2)
+subplot(4, 1, 3);
+plot(t,p);
+hold <span class="string">on</span>
+plot(t(index), p(index), <span class="string">'r*'</span>);
+title(<span class="string">'Linearized Roll Rate over time +0.1 rad/s'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%%%%%%%%%% deviation in pitch rate %%%%%%%%%%%%%%%</span>
+phi_dev = 0; <span class="comment">%bank, radians</span>
+theta_dev = 0; <span class="comment">%pitch, radians</span>
+xi_dev = 0; <span class="comment">%azimuth, radians</span>
+p_dev = 0; <span class="comment">%roll rate, rad/s</span>
+q_dev = 0.1; <span class="comment">%pitch rate, rad/s</span>
+r_dev = 0; <span class="comment">%yaw rate, rad/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials2 = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; <span class="comment">%seconds</span>
+[t, state_vec2] = ode45(@(t,state_vec2) g_fun(t,state_vec2, f1, f2, f3, f4),t_span,initials2);
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+z2 = state_vec2(:, 3);
+
+figure(1);
+subplot(2, 2, 4);
+plot3(x2, y2, z2);
+<span class="comment">%find index at 0.5 seconds (time constant)</span>
+index = find(t &gt;= 0.5, 1);
+hold <span class="string">on</span>
+plot3(x2(index),y2(index),z2(index), <span class="string">'r*'</span>)
+title(<span class="string">'Linearized Model: +0.1 rad/s pitch rate'</span>);
+xlabel(<span class="string">'North (m)'</span>);
+ylabel(<span class="string">'East (m)'</span>);
+zlabel(<span class="string">'Down (m)'</span>);
+grid <span class="string">on</span>
+
+q = state_vec2(:, 11);
+
+<span class="comment">%plot the pitch rate</span>
+figure(2)
+subplot(4, 1, 4);
+plot(t,q);
+hold <span class="string">on</span>
+plot(t(index), q(index), <span class="string">'r*'</span>);
+title(<span class="string">'Linearized Pitch Rate over time +0.1 rad/s'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%%%%%%%%%% deviation in bank %%%%%%%%%%%%%%%</span>
+phi_dev = deg2rad(5); <span class="comment">%bank, radians</span>
+theta_dev = 0; <span class="comment">%pitch, radians</span>
+xi_dev = 0; <span class="comment">%azimuth, radians</span>
+p_dev = 0; <span class="comment">%roll rate, rad/s</span>
+q_dev = 0; <span class="comment">%pitch rate, rad/s</span>
+r_dev = 0; <span class="comment">%yaw rate, rad/s</span>
+
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials2 = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; <span class="comment">%seconds</span>
+[t, state_vec2] = ode45(@(t,state_vec2) g_fun(t,state_vec2, f1, f2, f3, f4),t_span,initials2);
+
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+z2 = state_vec2(:, 3);
+
+figure(1);
+subplot(2, 2, 2);
+plot3(x2, y2, z2);
+<span class="comment">%find index at 0.5 seconds (time constant)</span>
+index = find(t &gt;= 0.5, 1);
+hold <span class="string">on</span>
+plot3(x2(index),y2(index),z2(index), <span class="string">'r*'</span>)
+title(<span class="string">'Linearized Model: +5 deg bank'</span>);
+xlabel(<span class="string">'North (m)'</span>);
+ylabel(<span class="string">'East (m)'</span>);
+zlabel(<span class="string">'Down (m)'</span>);
+grid <span class="string">on</span>
+
+phi = state_vec2(:, 4);
+
+<span class="comment">%plot the bank</span>
+figure(2)
+subplot(4, 1, 1);
+plot(t,phi);
+hold <span class="string">on</span>
+plot(t(index), phi(index), <span class="string">'r*'</span>);
+title(<span class="string">'Linearized Bank over time +5 degrees'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%%%%%%%%%% deviation in pitch %%%%%%%%%%%%%%%</span>
+phi_dev = 0; <span class="comment">%bank, radians</span>
+theta_dev = deg2rad(5); <span class="comment">%pitch, radians</span>
+xi_dev = 0; <span class="comment">%azimuth, radians</span>
+p_dev = 0; <span class="comment">%roll rate, rad/s</span>
+q_dev = 0; <span class="comment">%pitch rate, rad/s</span>
+r_dev = 0; <span class="comment">%yaw rate, rad/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials2 = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; <span class="comment">%seconds</span>
+[t, state_vec2] = ode45(@(t,state_vec2) g_fun(t,state_vec2, f1, f2, f3, f4),t_span,initials2);
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+z2 = state_vec2(:, 3);
+
+figure(1);
+subplot(2, 2, 1);
+plot3(x2, y2, z2);
+<span class="comment">%find index at 0.5 seconds (time constant)</span>
+index = find(t &gt;= 0.5, 1);
+hold <span class="string">on</span>
+plot3(x2(index),y2(index),z2(index), <span class="string">'r*'</span>)
+title(<span class="string">'Linearized Model: +5 deg pitch'</span>);
+xlabel(<span class="string">'North (m)'</span>);
+ylabel(<span class="string">'East (m)'</span>);
+zlabel(<span class="string">'Down (m)'</span>);
+grid <span class="string">on</span>
+
+theta = state_vec2(:, 5);
+
+<span class="comment">%plot the elevation</span>
+figure(2)
+subplot(4, 1, 2);
+plot(t,theta);
+hold <span class="string">on</span>
+plot(t(index), theta(index), <span class="string">'r*'</span>);
+title(<span class="string">'Linearized Pitch over time +5 degrees'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <img vspace="5" hspace="5" src="main_02.png" alt=""> <h2 id="3">Part 3 - control law with non-linearized model</h2><pre class="codeinput"><span class="comment">%%%%%%%%%% deviation in roll rate %%%%%%%%%%%%%%%</span>
+phi_dev = 0; <span class="comment">%bank, radians</span>
+theta_dev = 0; <span class="comment">%pitch, radians</span>
+xi_dev = 0; <span class="comment">%azimuth, radians</span>
+p_dev = 0.1; <span class="comment">%roll rate, rad/s</span>
+q_dev = 0; <span class="comment">%pitch rate, rad/s</span>
+r_dev = 0; <span class="comment">%yaw rate, rad/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; <span class="comment">%seconds</span>
+[t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, f1, f2, f3, f4),t_span,initials);
+
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+z = state_vec(:, 3);
+p = state_vec(: ,10);
+
+<span class="comment">%find index at 0.5 seconds (time constant)</span>
+index = find(t &gt;= 0.5, 1);
+
+figure(3);
+subplot(2, 2, 3);
+plot3(x, y, z);
+hold <span class="string">on</span>
+plot3(x(index),y(index),z(index), <span class="string">'r*'</span>);
+title(<span class="string">'Non-Linearized Model: +0.1 rad/s roll rate'</span>);
+xlabel(<span class="string">'North (m)'</span>);
+ylabel(<span class="string">'East (m)'</span>);
+zlabel(<span class="string">'Down (m)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%plot the roll rate</span>
+figure(4)
+subplot(4, 1, 3);
+plot(t,p);
+hold <span class="string">on</span>
+plot(t(index), p(index), <span class="string">'r*'</span>);
+title(<span class="string">'Non-linearized Roll Rate over time +0.1 rad/s'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%%%%%%%%%% deviation in pitch rate %%%%%%%%%%%%%%%</span>
+phi_dev = 0; <span class="comment">%bank, radians</span>
+theta_dev = 0; <span class="comment">%pitch, radians</span>
+xi_dev = 0; <span class="comment">%azimuth, radians</span>
+p_dev = 0; <span class="comment">%roll rate, rad/s</span>
+q_dev = 0.1; <span class="comment">%pitch rate, rad/s</span>
+r_dev = 0; <span class="comment">%yaw rate, rad/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; <span class="comment">%seconds</span>
+[t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, f1, f2, f3, f4),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+z = state_vec(:, 3);
+
+figure(3);
+subplot(2, 2, 4);
+plot3(x, y, z);
+<span class="comment">%find index at 0.5 seconds (time constant)</span>
+index = find(t &gt;= 0.5, 1);
+hold <span class="string">on</span>
+plot3(x(index),y(index),z(index), <span class="string">'r*'</span>)
+title(<span class="string">'Non-Linearized Model: +0.1 rad/s pitch rate'</span>);
+xlabel(<span class="string">'North (m)'</span>);
+ylabel(<span class="string">'East (m)'</span>);
+zlabel(<span class="string">'Down (m)'</span>);
+grid <span class="string">on</span>
+
+q = state_vec(:, 11);
+
+<span class="comment">%plot the pitch rate</span>
+figure(4)
+subplot(4, 1, 4);
+plot(t,q);
+hold <span class="string">on</span>
+plot(t(index), q(index), <span class="string">'r*'</span>);
+title(<span class="string">'Non-linearized Pitch Rate over time +0.1 rad/s'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%%%%%%%%%% deviation in bank %%%%%%%%%%%%%%%</span>
+phi_dev = deg2rad(5); <span class="comment">%bank, radians</span>
+theta_dev = 0; <span class="comment">%pitch, radians</span>
+xi_dev = 0; <span class="comment">%azimuth, radians</span>
+p_dev = 0; <span class="comment">%roll rate, rad/s</span>
+q_dev = 0; <span class="comment">%pitch rate, rad/s</span>
+r_dev = 0; <span class="comment">%yaw rate, rad/s</span>
+
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; <span class="comment">%seconds</span>
+[t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, f1, f2, f3, f4),t_span,initials);
+
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+z = state_vec(:, 3);
+
+figure(3);
+subplot(2, 2, 2);
+plot3(x, y, z);
+<span class="comment">%find index at 0.5 seconds (time constant)</span>
+index = find(t &gt;= 0.5, 1);
+hold <span class="string">on</span>
+plot3(x(index),y(index),z(index), <span class="string">'r*'</span>)
+title(<span class="string">'Non-Linearized Model: +5 deg bank'</span>);
+xlabel(<span class="string">'North (m)'</span>);
+ylabel(<span class="string">'East (m)'</span>);
+zlabel(<span class="string">'Down (m)'</span>);
+grid <span class="string">on</span>
+
+phi = state_vec(:, 4);
+
+<span class="comment">%plot the bank</span>
+figure(4)
+subplot(4, 1, 1);
+plot(t,phi);
+hold <span class="string">on</span>
+plot(t(index), phi(index), <span class="string">'r*'</span>);
+title(<span class="string">'Non-linearized Bank over time +5 degrees'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%%%%%%%%%% deviation in pitch %%%%%%%%%%%%%%%</span>
+phi_dev = 0; <span class="comment">%bank, radians</span>
+theta_dev = deg2rad(5); <span class="comment">%pitch, radians</span>
+xi_dev = 0; <span class="comment">%azimuth, radians</span>
+p_dev = 0; <span class="comment">%roll rate, rad/s</span>
+q_dev = 0; <span class="comment">%pitch rate, rad/s</span>
+r_dev = 0; <span class="comment">%yaw rate, rad/s</span>
+
+<span class="comment">%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];</span>
+initials = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; <span class="comment">%seconds</span>
+[t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, f1, f2, f3, f4),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+z = state_vec(:, 3);
+
+figure(3);
+subplot(2, 2, 1);
+plot3(x, y, z);
+<span class="comment">%find index at 0.5 seconds (time constant)</span>
+index = find(t &gt;= 0.5, 1);
+hold <span class="string">on</span>
+plot3(x(index),y(index),z(index), <span class="string">'r*'</span>)
+title(<span class="string">'Non-Linearized Model: +5 deg pitch'</span>);
+xlabel(<span class="string">'North (m)'</span>);
+ylabel(<span class="string">'East (m)'</span>);
+zlabel(<span class="string">'Down (m)'</span>);
+grid <span class="string">on</span>
+
+theta = state_vec(:, 5);
+
+<span class="comment">%plot the elevation</span>
+figure(4)
+subplot(4, 1, 2);
+plot(t,theta);
+hold <span class="string">on</span>
+plot(t(index), theta(index), <span class="string">'r*'</span>);
+title(<span class="string">'Non-linearized Pitch over time +5 degrees'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <h2 id="4">Part 4 - Rolling Spider Quad Copter</h2><pre class="codeinput"><span class="comment">%load data</span>
+load(<span class="string">'RSdata_two_1530.mat'</span>);
+times=rt_estimatedStates.time(:);
+xdata=rt_estimatedStates.signals.values(:,1);
+ydata=rt_estimatedStates.signals.values(:,2);
+zdata=rt_estimatedStates.signals.values(:,3);
+figure(5);
+plot3(xdata, ydata, zdata);
+title(<span class="string">"Trajectory of Rolling Spider (w/ feedback control)"</span>);
+xlabel(<span class="string">"x (m)"</span>);
+ylabel(<span class="string">"y (m)"</span>);
+zlabel(<span class="string">"z (m)"</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%get bank, pitch, roll rate, pitch rate at 2 seconds</span>
+index = find(times &gt;= 2, 1);
+phi_data = rt_estimatedStates.signals.values(:,6);
+theta_data = rt_estimatedStates.signals.values(:,5);
+p_data = rt_estimatedStates.signals.values(:,10);
+q_data = rt_estimatedStates.signals.values(:,11);
+
+
+<span class="comment">%plot the bank</span>
+figure(6)
+subplot(4, 1, 1);
+plot(times,phi_data);
+hold <span class="string">on</span>
+plot(times(index), phi_data(index), <span class="string">'r*'</span>);
+title(<span class="string">'Rolling Spider Bank over time +5 degrees'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%plot the elevation</span>
+figure(6)
+subplot(4, 1, 2);
+plot(times,theta_data);
+hold <span class="string">on</span>
+plot(times(index), theta_data(index), <span class="string">'r*'</span>);
+title(<span class="string">'Rolling Spider Pitch over time +5 degrees'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%plot the roll rate</span>
+figure(6)
+subplot(4, 1, 3);
+plot(times,p_data);
+hold <span class="string">on</span>
+plot(times(index), p_data(index), <span class="string">'r*'</span>);
+title(<span class="string">'Rolling Spider Roll Rate over time +0.1 rad/s'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%plot the pitch rate</span>
+figure(6)
+subplot(4, 1, 4);
+plot(times,q_data);
+hold <span class="string">on</span>
+plot(times(index), q_data(index), <span class="string">'r*'</span>);
+title(<span class="string">'Rolling Spider Pitch Rate over time +0.1 rad/s'</span>);
+xlabel(<span class="string">'time (s)'</span>);
+ylabel(<span class="string">'roll rate (rad/s)'</span>);
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="main_05.png" alt=""> <img vspace="5" hspace="5" src="main_06.png" alt=""> <h2 id="5">other functions</h2><pre class="codeinput"><span class="comment">%This is the function called with ode45</span>
+<span class="comment">%</span>
+<span class="comment">% &lt;include&gt;g_fun.m&lt;\include&gt;</span>
+<span class="comment">%</span>
+<span class="keyword">function</span> ddt = g_fun(t,state_vec, f1, f2, f3, f4)
+</pre><h2 id="6">ode function for part 1/2 (linearized, with control law)</h2><pre class="codeinput"><span class="comment">%givens</span>
+m = 0.068; <span class="comment">%kg</span>
+rad = 0.06; <span class="comment">%m</span>
+Ix = 6.8e-5; <span class="comment">%kgm^2</span>
+Iy = 9.2e-5; <span class="comment">%kgm^2</span>
+Iz = 1.35e-4; <span class="comment">%kgm^2</span>
+g_b = [0; 0; -9.81]; <span class="comment">%m/s^2</span>
+k = 0.0024; <span class="comment">%Nm/N</span>
+
+<span class="comment">%gains</span>
+K1 = 12*Ix; <span class="comment">% controls roll rate</span>
+K2 = 20*Ix; <span class="comment">% controls bank</span>
+K3 = 12*Iy; <span class="comment">% controls pitch rate</span>
+K4 = 20*Iy; <span class="comment">% controls elevation</span>
+K5 = 0.004; <span class="comment">%Nm/(rad/s)</span>
+
+<span class="comment">%unpack state vector - all state variables are equal to their deviations in</span>
+<span class="comment">%steady hover</span>
+x_dev = state_vec(1, 1);
+y_dev = state_vec(2, 1);
+z_dev = state_vec(3, 1);
+phi_dev = state_vec(4, 1);
+theta_dev = state_vec(5, 1);
+xi_dev = state_vec(6, 1);
+u_dev = state_vec(7, 1);
+v_dev = state_vec(8, 1);
+w_dev = state_vec(9, 1);
+p_dev = state_vec(10, 1);
+q_dev = state_vec(11, 1);
+r_dev = state_vec(12, 1);
+
+<span class="comment">%deviations</span>
+f1_dev = 0;
+f2_dev = 0;
+f3_dev = 0;
+f4_dev = 0;
+
+Lc_dev = -K1*p_dev - K2*phi_dev;
+Mc_dev = -K3*q_dev - K4*theta_dev;
+Nc_dev = -K5*r_dev;
+Zc_dev = (f1_dev + f2_dev + f3_dev + f4_dev);
+
+<span class="comment">% longitudinal</span>
+dq_dev = (1/Iy)*Mc_dev;
+dtheta_dev = q_dev;
+du_dev = g_b(3)*theta_dev;
+<span class="comment">% lateral</span>
+dp_dev = (1/Ix)*Lc_dev;
+dphi_dev = p_dev;
+dv_dev = -g_b(3)*phi_dev;
+<span class="comment">% azimuth</span>
+dr_dev = (1/Iz)*Nc_dev;
+<span class="comment">% vertical</span>
+dw_dev = (1/m)*Zc_dev;
+
+Zc = Zc_dev + (f1 + f2 + f3 + f4)*(cos(theta_dev)*cos(phi_dev)); <span class="comment">%N</span>
+
+
+ddt = [u_dev; v_dev; w_dev; p_dev; q_dev; r_dev; du_dev; dv_dev; dw_dev + Zc + m*g_b(3); dp_dev; dq_dev; dr_dev];
+</pre><pre class="codeinput"><span class="keyword">end</span>
+<span class="comment">%</span>
+<span class="comment">% &lt;include&gt;g_fun2.m&lt;\include&gt;</span>
+<span class="comment">%</span>
+<span class="keyword">function</span> ddt = g_fun2(t,state_vec, f1, f2, f3, f4)
+</pre><h2 id="8">ode function for part 2 (non-linearized)</h2><pre class="codeinput"><span class="comment">%givens</span>
+m = 0.068; <span class="comment">%kg</span>
+rad = 0.06; <span class="comment">%m</span>
+Ix = 6.8e-5; <span class="comment">%kgm^2</span>
+Iy = 9.2e-5; <span class="comment">%kgm^2</span>
+Iz = 1.35e-4; <span class="comment">%kgm^2</span>
+g_b = [0; 0; -9.81]; <span class="comment">%m/s^2</span>
+k = 0.0024; <span class="comment">%Nm/N</span>
+
+<span class="comment">%gains</span>
+K1 = 12*Ix; <span class="comment">% controls roll rate</span>
+K2 = 20*Ix; <span class="comment">% controls bank</span>
+K3 = 12*Iy; <span class="comment">% controls pitch rate</span>
+K4 = 20*Iy; <span class="comment">% controls elevation</span>
+K5 = 0.004; <span class="comment">%Nm/(rad/s)</span>
+
+<span class="comment">%unpack state vector</span>
+x = state_vec(1, 1);
+y = state_vec(2, 1);
+z = state_vec(3, 1);
+phi = state_vec(4, 1);
+theta = state_vec(5, 1);
+xi = state_vec(6, 1);
+u = state_vec(7, 1);
+v = state_vec(8, 1);
+w = state_vec(9, 1);
+p = state_vec(10, 1);
+q = state_vec(11, 1);
+r = state_vec(12, 1);
+
+<span class="comment">%forces</span>
+Xc = (f1 + f2 + f3 + f4)*-sin(theta);
+Yc = (f1 + f2 + f3 + f4)*sin(phi)*cos(theta);
+Zc = (f1 + f2 + f3 + f4)*(cos(theta)*cos(phi)); <span class="comment">%N</span>
+n = 1e-3; <span class="comment">%N/(m/s)^2</span>
+Xa = -n*sqrt(u^2 + v^2 + w^2)*u;<span class="comment">%N</span>
+Ya = -n*sqrt(u^2 + v^2 + w^2)*v;<span class="comment">%N</span>
+Za = -n*sqrt(u^2 + v^2 + w^2)*w;<span class="comment">%N</span>
+A_a = [Xa; Ya; Za]; <span class="comment">%aerodynamic</span>
+A_c = [Xc; Yc; Zc]; <span class="comment">%controls</span>
+f_b = m.*g_b + A_a + A_c; <span class="comment">%net force in body frame cooridinates</span>
+
+<span class="comment">%moments</span>
+Lc = -K1*p - (K2*phi); <span class="comment">%Nm</span>
+Mc = -K3*q - (K4*theta);
+Nc = -K5*r;
+alpha = 2e-6; <span class="comment">%Nm/(rad/s)^2</span>
+La = -alpha*sqrt(p^2 + q^2 + r^2)*p; <span class="comment">%Nm</span>
+Ma = -alpha*sqrt(p^2 + q^2 + r^2)*q; <span class="comment">%Nm</span>
+Na = -alpha*sqrt(p^2 + q^2 + r^2)*r; <span class="comment">%Nm</span>
+G_ab = [La; Ma; Na]; <span class="comment">%aerodynamic</span>
+G_cb = [Lc; Mc; Nc]; <span class="comment">%controls</span>
+G_b = G_ab + G_cb; <span class="comment">%net moment about cg in body frame coordinates</span>
+
+
+du = f_b(1)/m;
+dv = f_b(2)/m;
+dw = f_b(3)/m;
+dp = (-((q*Iz*r) - (r*Iy*q)) + G_b(1))/Ix;
+dq = (((p*Iz*r) - (r*Ix*p)) + G_b(2))/Iy;
+dr = (-((p*Iy*q) - (q*Ix*p)) + G_b(3))/Iz;
+
+
+ddt = [u; v; w; p; q; r; du; dv; dw; dp; dq; dr];
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3128 - Assignment 04 - Main
+%  Simulation of a quad-copter, implementing feedback control
+%
+%   Author: Margaux McFarland
+%   Date: 10/3/19
+
+clc
+clear all
+close all
+
+%% Part 2 - control law with linearized model
+
+g_b = -9.81; %m/s^2
+m = 0.068; %kg
+%controls
+f1 = (-g_b*m)/4;
+f2 = (-g_b*m)/4;
+f3 = (-g_b*m)/4;
+f4 = (-g_b*m)/4;
+
+%%%%%%%%%% deviation in roll rate %%%%%%%%%%%%%%%
+phi_dev = 0; %bank, radians
+theta_dev = 0; %pitch, radians
+xi_dev = 0; %azimuth, radians
+p_dev = 0.1; %roll rate, rad/s
+q_dev = 0; %pitch rate, rad/s
+r_dev = 0; %yaw rate, rad/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials2 = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; %seconds
+[t, state_vec2] = ode45(@(t,state_vec2) g_fun(t,state_vec2, f1, f2, f3, f4),t_span,initials2);
+
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+z2 = state_vec2(:, 3);
+p = state_vec2(: ,10);
+
+%find index at 0.5 seconds (time constant)
+index = find(t >= 0.5, 1);
+
+figure(1);
+subplot(2, 2, 3);
+plot3(x2, y2, z2);
+hold on 
+plot3(x2(index),y2(index),z2(index), 'r*');
+title('Linearized Model: +0.1 rad/s roll rate');
+xlabel('North (m)');
+ylabel('East (m)');
+zlabel('Down (m)');
+grid on
+
+%plot the roll rate
+figure(2)
+subplot(4, 1, 3);
+plot(t,p);
+hold on 
+plot(t(index), p(index), 'r*');
+title('Linearized Roll Rate over time +0.1 rad/s');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%%%%%%%%%% deviation in pitch rate %%%%%%%%%%%%%%%
+phi_dev = 0; %bank, radians
+theta_dev = 0; %pitch, radians
+xi_dev = 0; %azimuth, radians
+p_dev = 0; %roll rate, rad/s
+q_dev = 0.1; %pitch rate, rad/s
+r_dev = 0; %yaw rate, rad/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials2 = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; %seconds
+[t, state_vec2] = ode45(@(t,state_vec2) g_fun(t,state_vec2, f1, f2, f3, f4),t_span,initials2);
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+z2 = state_vec2(:, 3);
+
+figure(1);
+subplot(2, 2, 4);
+plot3(x2, y2, z2);
+%find index at 0.5 seconds (time constant)
+index = find(t >= 0.5, 1);
+hold on 
+plot3(x2(index),y2(index),z2(index), 'r*')
+title('Linearized Model: +0.1 rad/s pitch rate');
+xlabel('North (m)');
+ylabel('East (m)');
+zlabel('Down (m)');
+grid on
+
+q = state_vec2(:, 11);
+
+%plot the pitch rate
+figure(2)
+subplot(4, 1, 4);
+plot(t,q);
+hold on 
+plot(t(index), q(index), 'r*');
+title('Linearized Pitch Rate over time +0.1 rad/s');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%%%%%%%%%% deviation in bank %%%%%%%%%%%%%%%
+phi_dev = deg2rad(5); %bank, radians
+theta_dev = 0; %pitch, radians
+xi_dev = 0; %azimuth, radians
+p_dev = 0; %roll rate, rad/s
+q_dev = 0; %pitch rate, rad/s
+r_dev = 0; %yaw rate, rad/s
+
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials2 = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; %seconds
+[t, state_vec2] = ode45(@(t,state_vec2) g_fun(t,state_vec2, f1, f2, f3, f4),t_span,initials2);
+
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+z2 = state_vec2(:, 3);
+
+figure(1);
+subplot(2, 2, 2);
+plot3(x2, y2, z2);
+%find index at 0.5 seconds (time constant)
+index = find(t >= 0.5, 1);
+hold on 
+plot3(x2(index),y2(index),z2(index), 'r*')
+title('Linearized Model: +5 deg bank');
+xlabel('North (m)');
+ylabel('East (m)');
+zlabel('Down (m)');
+grid on
+
+phi = state_vec2(:, 4);
+
+%plot the bank
+figure(2)
+subplot(4, 1, 1);
+plot(t,phi);
+hold on 
+plot(t(index), phi(index), 'r*');
+title('Linearized Bank over time +5 degrees');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%%%%%%%%%% deviation in pitch %%%%%%%%%%%%%%%
+phi_dev = 0; %bank, radians
+theta_dev = deg2rad(5); %pitch, radians
+xi_dev = 0; %azimuth, radians
+p_dev = 0; %roll rate, rad/s
+q_dev = 0; %pitch rate, rad/s
+r_dev = 0; %yaw rate, rad/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials2 = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; %seconds
+[t, state_vec2] = ode45(@(t,state_vec2) g_fun(t,state_vec2, f1, f2, f3, f4),t_span,initials2);
+
+x2 = state_vec2(:, 1);
+y2 = state_vec2(:, 2);
+z2 = state_vec2(:, 3);
+
+figure(1);
+subplot(2, 2, 1);
+plot3(x2, y2, z2);
+%find index at 0.5 seconds (time constant)
+index = find(t >= 0.5, 1);
+hold on 
+plot3(x2(index),y2(index),z2(index), 'r*')
+title('Linearized Model: +5 deg pitch');
+xlabel('North (m)');
+ylabel('East (m)');
+zlabel('Down (m)');
+grid on
+
+theta = state_vec2(:, 5);
+
+%plot the elevation
+figure(2)
+subplot(4, 1, 2);
+plot(t,theta);
+hold on 
+plot(t(index), theta(index), 'r*');
+title('Linearized Pitch over time +5 degrees');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%% Part 3 - control law with non-linearized model
+
+%%%%%%%%%% deviation in roll rate %%%%%%%%%%%%%%%
+phi_dev = 0; %bank, radians
+theta_dev = 0; %pitch, radians
+xi_dev = 0; %azimuth, radians
+p_dev = 0.1; %roll rate, rad/s
+q_dev = 0; %pitch rate, rad/s
+r_dev = 0; %yaw rate, rad/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; %seconds
+[t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, f1, f2, f3, f4),t_span,initials);
+
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+z = state_vec(:, 3);
+p = state_vec(: ,10);
+
+%find index at 0.5 seconds (time constant)
+index = find(t >= 0.5, 1);
+
+figure(3);
+subplot(2, 2, 3);
+plot3(x, y, z);
+hold on 
+plot3(x(index),y(index),z(index), 'r*');
+title('Non-Linearized Model: +0.1 rad/s roll rate');
+xlabel('North (m)');
+ylabel('East (m)');
+zlabel('Down (m)');
+grid on
+
+%plot the roll rate
+figure(4)
+subplot(4, 1, 3);
+plot(t,p);
+hold on 
+plot(t(index), p(index), 'r*');
+title('Non-linearized Roll Rate over time +0.1 rad/s');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%%%%%%%%%% deviation in pitch rate %%%%%%%%%%%%%%%
+phi_dev = 0; %bank, radians
+theta_dev = 0; %pitch, radians
+xi_dev = 0; %azimuth, radians
+p_dev = 0; %roll rate, rad/s
+q_dev = 0.1; %pitch rate, rad/s
+r_dev = 0; %yaw rate, rad/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; %seconds
+[t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, f1, f2, f3, f4),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+z = state_vec(:, 3);
+
+figure(3);
+subplot(2, 2, 4);
+plot3(x, y, z);
+%find index at 0.5 seconds (time constant)
+index = find(t >= 0.5, 1);
+hold on 
+plot3(x(index),y(index),z(index), 'r*')
+title('Non-Linearized Model: +0.1 rad/s pitch rate');
+xlabel('North (m)');
+ylabel('East (m)');
+zlabel('Down (m)');
+grid on
+
+q = state_vec(:, 11);
+
+%plot the pitch rate
+figure(4)
+subplot(4, 1, 4);
+plot(t,q);
+hold on 
+plot(t(index), q(index), 'r*');
+title('Non-linearized Pitch Rate over time +0.1 rad/s');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%%%%%%%%%% deviation in bank %%%%%%%%%%%%%%%
+phi_dev = deg2rad(5); %bank, radians
+theta_dev = 0; %pitch, radians
+xi_dev = 0; %azimuth, radians
+p_dev = 0; %roll rate, rad/s
+q_dev = 0; %pitch rate, rad/s
+r_dev = 0; %yaw rate, rad/s
+
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; %seconds
+[t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, f1, f2, f3, f4),t_span,initials);
+
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+z = state_vec(:, 3);
+
+figure(3);
+subplot(2, 2, 2);
+plot3(x, y, z);
+%find index at 0.5 seconds (time constant)
+index = find(t >= 0.5, 1);
+hold on 
+plot3(x(index),y(index),z(index), 'r*')
+title('Non-Linearized Model: +5 deg bank');
+xlabel('North (m)');
+ylabel('East (m)');
+zlabel('Down (m)');
+grid on
+
+phi = state_vec(:, 4);
+
+%plot the bank
+figure(4)
+subplot(4, 1, 1);
+plot(t,phi);
+hold on 
+plot(t(index), phi(index), 'r*');
+title('Non-linearized Bank over time +5 degrees');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%%%%%%%%%% deviation in pitch %%%%%%%%%%%%%%%
+phi_dev = 0; %bank, radians
+theta_dev = deg2rad(5); %pitch, radians
+xi_dev = 0; %azimuth, radians
+p_dev = 0; %roll rate, rad/s
+q_dev = 0; %pitch rate, rad/s
+r_dev = 0; %yaw rate, rad/s
+
+%state_vec = [x; y; z; phi; theta; xi; u; v; w; p; q; r];
+initials = [0 0 0 phi_dev theta_dev xi_dev 0 0 0 p_dev q_dev r_dev];
+t_span = [0 5]; %seconds
+[t, state_vec] = ode45(@(t,state_vec) g_fun2(t,state_vec, f1, f2, f3, f4),t_span,initials);
+
+x = state_vec(:, 1);
+y = state_vec(:, 2);
+z = state_vec(:, 3);
+
+figure(3);
+subplot(2, 2, 1);
+plot3(x, y, z);
+%find index at 0.5 seconds (time constant)
+index = find(t >= 0.5, 1);
+hold on 
+plot3(x(index),y(index),z(index), 'r*')
+title('Non-Linearized Model: +5 deg pitch');
+xlabel('North (m)');
+ylabel('East (m)');
+zlabel('Down (m)');
+grid on
+
+theta = state_vec(:, 5);
+
+%plot the elevation
+figure(4)
+subplot(4, 1, 2);
+plot(t,theta);
+hold on 
+plot(t(index), theta(index), 'r*');
+title('Non-linearized Pitch over time +5 degrees');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%% Part 4 - Rolling Spider Quad Copter
+
+%load data
+load('RSdata_two_1530.mat');
+times=rt_estimatedStates.time(:);
+xdata=rt_estimatedStates.signals.values(:,1);
+ydata=rt_estimatedStates.signals.values(:,2);
+zdata=rt_estimatedStates.signals.values(:,3);
+figure(5);
+plot3(xdata, ydata, zdata);
+title("Trajectory of Rolling Spider (w/ feedback control)");
+xlabel("x (m)");
+ylabel("y (m)");
+zlabel("z (m)");
+grid on
+
+%get bank, pitch, roll rate, pitch rate at 2 seconds
+index = find(times >= 2, 1);
+phi_data = rt_estimatedStates.signals.values(:,6);
+theta_data = rt_estimatedStates.signals.values(:,5);
+p_data = rt_estimatedStates.signals.values(:,10);
+q_data = rt_estimatedStates.signals.values(:,11);
+
+
+%plot the bank
+figure(6)
+subplot(4, 1, 1);
+plot(times,phi_data);
+hold on 
+plot(times(index), phi_data(index), 'r*');
+title('Rolling Spider Bank over time +5 degrees');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%plot the elevation
+figure(6)
+subplot(4, 1, 2);
+plot(times,theta_data);
+hold on 
+plot(times(index), theta_data(index), 'r*');
+title('Rolling Spider Pitch over time +5 degrees');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%plot the roll rate
+figure(6)
+subplot(4, 1, 3);
+plot(times,p_data);
+hold on 
+plot(times(index), p_data(index), 'r*');
+title('Rolling Spider Roll Rate over time +0.1 rad/s');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%plot the pitch rate
+figure(6)
+subplot(4, 1, 4);
+plot(times,q_data);
+hold on 
+plot(times(index), q_data(index), 'r*');
+title('Rolling Spider Pitch Rate over time +0.1 rad/s');
+xlabel('time (s)');
+ylabel('roll rate (rad/s)');
+grid on
+
+%% other functions
+%This is the function called with ode45
+%
+% <include>g_fun.m<\include>
+%
+function ddt = g_fun(t,state_vec, f1, f2, f3, f4)
+%% ode function for part 1/2 (linearized, with control law)
+
+%givens
+m = 0.068; %kg
+rad = 0.06; %m
+Ix = 6.8e-5; %kgm^2
+Iy = 9.2e-5; %kgm^2
+Iz = 1.35e-4; %kgm^2
+g_b = [0; 0; -9.81]; %m/s^2
+k = 0.0024; %Nm/N
+
+%gains
+K1 = 12*Ix; % controls roll rate
+K2 = 20*Ix; % controls bank
+K3 = 12*Iy; % controls pitch rate
+K4 = 20*Iy; % controls elevation
+K5 = 0.004; %Nm/(rad/s) 
+
+%unpack state vector - all state variables are equal to their deviations in
+%steady hover
+x_dev = state_vec(1, 1);
+y_dev = state_vec(2, 1);
+z_dev = state_vec(3, 1);
+phi_dev = state_vec(4, 1);
+theta_dev = state_vec(5, 1);
+xi_dev = state_vec(6, 1);
+u_dev = state_vec(7, 1);
+v_dev = state_vec(8, 1);
+w_dev = state_vec(9, 1);
+p_dev = state_vec(10, 1);
+q_dev = state_vec(11, 1);
+r_dev = state_vec(12, 1);
+
+%deviations
+f1_dev = 0;
+f2_dev = 0;
+f3_dev = 0;
+f4_dev = 0;
+
+Lc_dev = -K1*p_dev - K2*phi_dev;
+Mc_dev = -K3*q_dev - K4*theta_dev;
+Nc_dev = -K5*r_dev;
+Zc_dev = (f1_dev + f2_dev + f3_dev + f4_dev);
+
+% longitudinal
+dq_dev = (1/Iy)*Mc_dev;
+dtheta_dev = q_dev;
+du_dev = g_b(3)*theta_dev;
+% lateral
+dp_dev = (1/Ix)*Lc_dev;
+dphi_dev = p_dev;
+dv_dev = -g_b(3)*phi_dev;
+% azimuth
+dr_dev = (1/Iz)*Nc_dev;
+% vertical
+dw_dev = (1/m)*Zc_dev;
+
+Zc = Zc_dev + (f1 + f2 + f3 + f4)*(cos(theta_dev)*cos(phi_dev)); %N
+
+
+ddt = [u_dev; v_dev; w_dev; p_dev; q_dev; r_dev; du_dev; dv_dev; dw_dev + Zc + m*g_b(3); dp_dev; dq_dev; dr_dev];
+
+end
+%
+% <include>g_fun2.m<\include>
+%
+function ddt = g_fun2(t,state_vec, f1, f2, f3, f4)
+%% ode function for part 2 (non-linearized)
+
+%givens
+m = 0.068; %kg
+rad = 0.06; %m
+Ix = 6.8e-5; %kgm^2
+Iy = 9.2e-5; %kgm^2
+Iz = 1.35e-4; %kgm^2
+g_b = [0; 0; -9.81]; %m/s^2
+k = 0.0024; %Nm/N
+
+%gains
+K1 = 12*Ix; % controls roll rate
+K2 = 20*Ix; % controls bank
+K3 = 12*Iy; % controls pitch rate
+K4 = 20*Iy; % controls elevation
+K5 = 0.004; %Nm/(rad/s)
+
+%unpack state vector
+x = state_vec(1, 1);
+y = state_vec(2, 1);
+z = state_vec(3, 1);
+phi = state_vec(4, 1);
+theta = state_vec(5, 1);
+xi = state_vec(6, 1);
+u = state_vec(7, 1);
+v = state_vec(8, 1);
+w = state_vec(9, 1);
+p = state_vec(10, 1);
+q = state_vec(11, 1);
+r = state_vec(12, 1);
+
+%forces
+Xc = (f1 + f2 + f3 + f4)*-sin(theta);
+Yc = (f1 + f2 + f3 + f4)*sin(phi)*cos(theta);
+Zc = (f1 + f2 + f3 + f4)*(cos(theta)*cos(phi)); %N
+n = 1e-3; %N/(m/s)^2
+Xa = -n*sqrt(u^2 + v^2 + w^2)*u;%N
+Ya = -n*sqrt(u^2 + v^2 + w^2)*v;%N
+Za = -n*sqrt(u^2 + v^2 + w^2)*w;%N
+A_a = [Xa; Ya; Za]; %aerodynamic
+A_c = [Xc; Yc; Zc]; %controls
+f_b = m.*g_b + A_a + A_c; %net force in body frame cooridinates
+
+%moments
+Lc = -K1*p - (K2*phi); %Nm
+Mc = -K3*q - (K4*theta);
+Nc = -K5*r;
+alpha = 2e-6; %Nm/(rad/s)^2
+La = -alpha*sqrt(p^2 + q^2 + r^2)*p; %Nm
+Ma = -alpha*sqrt(p^2 + q^2 + r^2)*q; %Nm
+Na = -alpha*sqrt(p^2 + q^2 + r^2)*r; %Nm
+G_ab = [La; Ma; Na]; %aerodynamic
+G_cb = [Lc; Mc; Nc]; %controls
+G_b = G_ab + G_cb; %net moment about cg in body frame coordinates
+
+
+du = f_b(1)/m;
+dv = f_b(2)/m;
+dw = f_b(3)/m;
+dp = (-((q*Iz*r) - (r*Iy*q)) + G_b(1))/Ix;
+dq = (((p*Iz*r) - (r*Ix*p)) + G_b(2))/Iy;
+dr = (-((p*Iy*q) - (q*Ix*p)) + G_b(3))/Iz;
+
+
+ddt = [u; v; w; p; q; r; du; dv; dw; dp; dq; dr];
+end
+
+##### SOURCE END #####
+--></body></html>

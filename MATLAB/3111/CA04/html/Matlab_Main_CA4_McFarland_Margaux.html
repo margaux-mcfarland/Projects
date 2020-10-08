@@ -1,0 +1,337 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Matlab_Main_CA4_McFarland_Margaux</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-11-21"><meta name="DC.source" content="Matlab_Main_CA4_McFarland_Margaux.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3111 - Computational Assignment 04 - Main</a></li><li><a href="#2">Problem 1/2</a></li><li><a href="#3">Problem 3 - thin wing (thin airfoil theory)</a></li><li><a href="#4">Functions Called</a></li></ul></div><h2 id="1">ASEN 3111 - Computational Assignment 04 - Main</h2><pre>Flow Over Thick Airfoils</pre><pre class="language-matlab">Author: Margaux McFarland
+Collaborators:
+Date: 11/21/19
+</pre><pre class="codeinput">clc;
+clear;
+close <span class="string">all</span>;
+</pre><h2 id="2">Problem 1/2</h2><pre class="codeinput"><span class="comment">%givens</span>
+b = 30.48; <span class="comment">%span, m</span>
+c_r = 4.572; <span class="comment">%chord at root, m</span>
+c_t = 1.524; <span class="comment">%chord at tip, m</span>
+geo_t = 0;<span class="comment">%AoA at tip, degrees</span>
+geo_r = 5; <span class="comment">%AoA at root, degrees</span>
+<span class="comment">% the following data is from my comp assignment 3</span>
+aero_t = 0; <span class="comment">%zero-lift AoA at tip (NACA 0012), degrees</span>
+aero_r = -2; <span class="comment">%zero-lift AoA at root(NACA 2412), degrees</span>
+a0_t = 5.055344; <span class="comment">%lift slope at tip (NACA 0012)</span>
+a0_r = 5.055298; <span class="comment">%lift slope at root (NACA 2412)</span>
+rho = 1.225; <span class="comment">%air density, kg/m^3</span>
+V = 67.056; <span class="comment">%m/s</span>
+S = (c_r + c_t)*b/2;
+
+<span class="comment">%try with a high number of terms for the actual values</span>
+N = 500; <span class="comment">%number of terms</span>
+
+[e_actual,c_L_actual,c_Di_actual] = PLLT(b,a0_t,a0_r,c_t,c_r,aero_t,aero_r,geo_t,geo_r,N);
+
+<span class="comment">%display values for lift and induced drag</span>
+L = 0.5*rho*V^2*S*c_L_actual;
+Di = 0.5*rho*V^2*S*c_Di_actual;
+fprintf(<span class="string">"Lift: %d\n"</span>, L);
+fprintf(<span class="string">"Induced Drag: %d\n"</span>, Di);
+fprintf(<span class="string">"---------------------------------------------------------\n"</span>);
+
+<span class="comment">%error</span>
+panels = 1:100;
+<span class="keyword">for</span> i = 1:length(panels) <span class="comment">%loop through number of terms</span>
+    [e,c_L,c_Di] = PLLT(b,a0_t,a0_r,c_t,c_r,aero_t,aero_r,geo_t,geo_r,i);
+    error(i) = abs(c_Di - c_Di_actual)/c_Di_actual;
+<span class="keyword">end</span>
+
+<span class="comment">% 5 percent error</span>
+index = find(error &lt;= 0.5, 1);
+fprintf(<span class="string">"Minimum number of Panels for 5 percent relative error: %d\n"</span>, panels(index));
+<span class="comment">% 1 percent error</span>
+index = find(error &lt;= 0.01, 1);
+fprintf(<span class="string">"Minimum number of Panels for 1 percent relative error: %d\n"</span>, panels(index));
+<span class="comment">% 1/10 percent error</span>
+index = find(error &lt;= 0.001, 1);
+fprintf(<span class="string">"Minimum number of Panels for 0.1 percent relative error: %d\n"</span>, panels(index));
+</pre><pre class="codeoutput">Lift: 7.860579e+04
+Induced Drag: 1.787990e+03
+---------------------------------------------------------
+Minimum number of Panels for 5 percent relative error: 3
+Minimum number of Panels for 1 percent relative error: 14
+Minimum number of Panels for 0.1 percent relative error: 44
+</pre><h2 id="3">Problem 3 - thin wing (thin airfoil theory)</h2><pre class="codeinput"><span class="comment">%thin aifoil-lift slope is 2pi</span>
+a0_t = 2*pi; <span class="comment">%lift slope at tip</span>
+a0_r = 2*pi; <span class="comment">%lift slope at root</span>
+geo_t = 5;<span class="comment">%AoA at tip, degrees</span>
+geo_r = 5; <span class="comment">%AoA at root, degrees</span>
+aero_t = 0; <span class="comment">%zero-lift AoA at tip, degrees</span>
+aero_r = 0; <span class="comment">%zero-lift AoA at root, degrees</span>
+c_t = 1; <span class="comment">%chord at tip, meters</span>
+taper_ratio = linspace(0,1,100);
+c_r = c_t.*taper_ratio; <span class="comment">%chords at root, meters, increases to increase taper ratio</span>
+
+AR = [4 6 8 10]; <span class="comment">%aspect ratios</span>
+N = 20;
+<span class="comment">%loop through each aspect ratio</span>
+<span class="keyword">for</span> i = 1:length(AR)
+    <span class="comment">%loop through each root chord</span>
+    <span class="keyword">for</span> j = 1:length(c_r)
+        <span class="comment">%calculate the span for each root/tip chord (area of trapezoid)</span>
+        b = (c_r(j) + c_t)*AR(i)/2;
+        [e(i,j),c_L,c_Di] = PLLT(b,a0_t,a0_r,c_t,c_r(j),aero_t,aero_r,geo_t,geo_r,N);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%plot e vs taper ratio for each AR</span>
+figure(1)
+plot(taper_ratio,e);
+xlabel(<span class="string">'Taper ratio, c_t,c_r'</span>);
+ylabel(<span class="string">'Span Efficiency Factor, e'</span>);
+title(<span class="string">'Span Efficiency Factor vs Taper Ratio'</span>);
+legend(<span class="string">'AR = 4'</span>, <span class="string">'AR = 6'</span>, <span class="string">'AR = 8'</span>, <span class="string">'AR = 10'</span>);
+grid <span class="string">on</span>
+<span class="comment">%plot induced drag factor vs taper ratio to match with graph in Anderson</span>
+figure(2)
+plot(taper_ratio,e.^-1 - 1);
+xlabel(<span class="string">'Taper ratio, c_t,c_r'</span>);
+ylabel(<span class="string">'Induced Drag Factor'</span>);
+title(<span class="string">'Induced Drag Factor vs Taper Ratio'</span>);
+legend(<span class="string">'AR = 4'</span>, <span class="string">'AR = 6'</span>, <span class="string">'AR = 8'</span>, <span class="string">'AR = 10'</span>);
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA4_McFarland_Margaux_01.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA4_McFarland_Margaux_02.png" alt=""> <h2 id="4">Functions Called</h2><p>The following functions were built and called as apart of this assignment.</p><pre class="language-matlab">
+<span class="keyword">function</span> [e,c_L,c_Di] = PLLT(b,a0_t,a0_r,c_t,c_r,aero_t,aero_r,geo_t,geo_r,N)
+<span class="comment">%PLLT solves the fundamental equation of Prandtl Lifting Line Theory for</span>
+<span class="comment">%finite wings with thick airfoilf</span>
+<span class="comment">%   This function returns the coefficient of lift, coefficient of</span>
+<span class="comment">%   drag, and span efficieny given the span, the cross-sectional lift</span>
+<span class="comment">%   slope at the tip and root(per radian), the chord at the tip and root</span>
+<span class="comment">%   (in ft), the zero-lift AoA at the tip and root (in degrees), geometric angle of </span>
+<span class="comment">%   attack at the tip and root(degrees), and N the number of off Fourier </span>
+<span class="comment">%   terms </span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators: </span>
+<span class="comment">%   Date: 10/25/19</span>
+
+<span class="comment">%givens</span>
+V_inf = 67.056; <span class="comment">%m/s</span>
+
+<span class="comment">%convert angles to radians</span>
+geo_t = deg2rad(geo_t);
+geo_r = deg2rad(geo_r);
+aero_t = deg2rad(aero_t);
+aero_r = deg2rad(aero_r);
+
+<span class="comment">%get vecotr of all odd terms</span>
+n = linspace(1,N,N);
+odd = 2*n-1;
+
+<span class="keyword">for</span> i = 1:N
+    theta(i) = (n(i)*pi)/(2*N);
+<span class="keyword">end</span>
+
+<span class="comment">%get lift slopes/chords/geo/zero lift AoAs in vector form</span>
+a0 = a0_r+(a0_r-a0_t).*-cos(theta);
+geo = geo_r+(geo_r-geo_t).*-cos(theta);
+c = c_r+(c_r-c_t).*-cos(theta);
+aero = aero_r+(aero_r-aero_t).*-cos(theta);
+
+<span class="comment">%B matrix</span>
+B = geo-aero;
+
+<span class="comment">%solve for the Fourier coefficients</span>
+<span class="keyword">for</span> i = 1:N <span class="comment">%loop through each theta</span>
+    <span class="keyword">for</span> j = 1:length(odd) <span class="comment">% loop through each odd term</span>
+        <span class="comment">%A matrix</span>
+        A(i,j) = (((4*b)/(a0(i)*c(i)))*sin(theta(n(i)) *odd(j))<span class="keyword">...</span>
+            + (odd(j).* sin(theta(n(i)).*odd(j)))./sin(theta(n(i))));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%matrix of Fourier coefficients</span>
+X = A\B';
+
+S = (c_r + c_t)*(b/2); <span class="comment">%planform area, m^2</span>
+AR = b^2/S; <span class="comment">%aspect ratio</span>
+
+<span class="comment">%coefficient of lift</span>
+c_L = X(1)*pi*AR;
+<span class="comment">%find span efficiency factor</span>
+<span class="keyword">for</span> i = 1:length(X)
+    delta(i) = n(i).*(X(i)/X(1))^2;
+<span class="keyword">end</span>
+e = 1./(1+sum(delta));
+<span class="comment">%coefficient of drag</span>
+c_Di = c_L^2 /(pi*AR*e);
+
+<span class="keyword">end</span>
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3111 - Computational Assignment 04 - Main
+%  Flow Over Thick Airfoils
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 11/21/19
+
+clc;
+clear;
+close all;
+
+%% Problem 1/2
+
+%givens
+b = 30.48; %span, m
+c_r = 4.572; %chord at root, m
+c_t = 1.524; %chord at tip, m
+geo_t = 0;%AoA at tip, degrees
+geo_r = 5; %AoA at root, degrees
+% the following data is from my comp assignment 3
+aero_t = 0; %zero-lift AoA at tip (NACA 0012), degrees
+aero_r = -2; %zero-lift AoA at root(NACA 2412), degrees
+a0_t = 5.055344; %lift slope at tip (NACA 0012)
+a0_r = 5.055298; %lift slope at root (NACA 2412)
+rho = 1.225; %air density, kg/m^3
+V = 67.056; %m/s
+S = (c_r + c_t)*b/2;
+
+%try with a high number of terms for the actual values
+N = 500; %number of terms
+
+[e_actual,c_L_actual,c_Di_actual] = PLLT(b,a0_t,a0_r,c_t,c_r,aero_t,aero_r,geo_t,geo_r,N);
+
+%display values for lift and induced drag
+L = 0.5*rho*V^2*S*c_L_actual;
+Di = 0.5*rho*V^2*S*c_Di_actual;
+fprintf("Lift: %d\n", L);
+fprintf("Induced Drag: %d\n", Di);
+fprintf("REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n");
+
+%error
+panels = 1:100;
+for i = 1:length(panels) %loop through number of terms
+    [e,c_L,c_Di] = PLLT(b,a0_t,a0_r,c_t,c_r,aero_t,aero_r,geo_t,geo_r,i);
+    error(i) = abs(c_Di - c_Di_actual)/c_Di_actual;
+end
+
+% 5 percent error
+index = find(error <= 0.5, 1);
+fprintf("Minimum number of Panels for 5 percent relative error: %d\n", panels(index));
+% 1 percent error
+index = find(error <= 0.01, 1);
+fprintf("Minimum number of Panels for 1 percent relative error: %d\n", panels(index));
+% 1/10 percent error
+index = find(error <= 0.001, 1);
+fprintf("Minimum number of Panels for 0.1 percent relative error: %d\n", panels(index));
+%% Problem 3 - thin wing (thin airfoil theory)
+
+%thin aifoil-lift slope is 2pi
+a0_t = 2*pi; %lift slope at tip
+a0_r = 2*pi; %lift slope at root
+geo_t = 5;%AoA at tip, degrees
+geo_r = 5; %AoA at root, degrees
+aero_t = 0; %zero-lift AoA at tip, degrees
+aero_r = 0; %zero-lift AoA at root, degrees
+c_t = 1; %chord at tip, meters
+taper_ratio = linspace(0,1,100);
+c_r = c_t.*taper_ratio; %chords at root, meters, increases to increase taper ratio
+
+AR = [4 6 8 10]; %aspect ratios
+N = 20;
+%loop through each aspect ratio
+for i = 1:length(AR)
+    %loop through each root chord
+    for j = 1:length(c_r)
+        %calculate the span for each root/tip chord (area of trapezoid)
+        b = (c_r(j) + c_t)*AR(i)/2;
+        [e(i,j),c_L,c_Di] = PLLT(b,a0_t,a0_r,c_t,c_r(j),aero_t,aero_r,geo_t,geo_r,N);
+    end
+end
+
+%plot e vs taper ratio for each AR
+figure(1)
+plot(taper_ratio,e);
+xlabel('Taper ratio, c_t,c_r');
+ylabel('Span Efficiency Factor, e');
+title('Span Efficiency Factor vs Taper Ratio');
+legend('AR = 4', 'AR = 6', 'AR = 8', 'AR = 10');
+grid on
+%plot induced drag factor vs taper ratio to match with graph in Anderson
+figure(2)
+plot(taper_ratio,e.^-1 - 1);
+xlabel('Taper ratio, c_t,c_r');
+ylabel('Induced Drag Factor');
+title('Induced Drag Factor vs Taper Ratio');
+legend('AR = 4', 'AR = 6', 'AR = 8', 'AR = 10');
+grid on
+
+%% Functions Called
+% The following functions were built and called as apart of this
+% assignment.
+%
+% <include>PLLT.m</include>
+%
+##### SOURCE END #####
+--></body></html>

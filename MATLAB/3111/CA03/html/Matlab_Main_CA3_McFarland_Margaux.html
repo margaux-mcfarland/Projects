@@ -1,0 +1,629 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Matlab_Main_CA3_McFarland_Margaux</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-11-07"><meta name="DC.source" content="Matlab_Main_CA3_McFarland_Margaux.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ASEN 3111 - Computational Assignment 03 - Main</a></li><li><a href="#2">Problem 1</a></li><li><a href="#3">Problem 2</a></li><li><a href="#4">Problem 3</a></li><li><a href="#5">Functions Called</a></li></ul></div><h2 id="1">ASEN 3111 - Computational Assignment 03 - Main</h2><pre>Flow Over Thick Airfoils</pre><pre class="language-matlab">Author: Margaux McFarland
+Collaborators:
+Date: 11/7/19
+</pre><pre class="codeinput">clc;
+clear;
+close <span class="string">all</span>;
+</pre><h2 id="2">Problem 1</h2><pre class="codeinput"><span class="comment">%test that vortex panel method works with Kuthe/Chow data/values</span>
+xb = [1, 0.933, 0.750, 0.500, 0.250, 0.067, 0, 0.067, 0.250, 0.500, 0.750, 0.933, 1];
+yb = [0, -0.005, -0.017, -0.033, -0.042, -0.033, 0, 0.045, 0.076, 0.072, 0.044, 0.013,0];
+c_l = Vortex_Panel(xb,yb,100,8,1);
+</pre><pre class="codeoutput">i  X(i)  Y(i)  theta(i)  S(i)  GAMA(i)  V(i)  CP(i)
+--  ----  ----  --------  ----  -------  ----  -----
+1  0.966500  -0.002500  -3.067104  0.067186  -0.082275  -0.858493  0.262989
+2  0.841500  -0.011000  -3.076113  0.183393  -0.140334  -0.896184  0.196855
+3  0.625000  -0.025000  -3.077680  0.250511  -0.142215  -0.888988  0.209701
+4  0.375000  -0.037500  -3.105608  0.250162  -0.141345  -0.856333  0.266694
+5  0.158500  -0.037500  3.092452  0.183221  -0.133396  -0.727560  0.470657
+6  0.033500  -0.016500  2.683933  0.074686  -0.098112  0.083996  0.992945
+7  0.033500  0.022500  0.591439  0.080709  0.217040  1.676350  -1.810148
+8  0.158500  0.060500  0.167806  0.185607  0.278488  1.583928  -1.508829
+9  0.375000  0.074000  -0.015999  0.250032  0.240102  1.390473  -0.933416
+10  0.625000  0.058000  -0.111535  0.251563  0.209797  1.228783  -0.509909
+11  0.841500  0.028500  -0.167806  0.185607  0.184293  1.081112  -0.168802
+12  0.966500  0.006500  -0.191648  0.068250  0.157778  0.912456  0.167424
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_01.png" alt=""> <h2 id="3">Problem 2</h2><pre class="codeinput"><span class="comment">%NACA 0012</span>
+m = 0;
+p = 0;
+t = 12/100;
+c = 1; <span class="comment">%m %?</span>
+V_inf = 25; <span class="comment">%set to 100 m/s</span>
+
+<span class="comment">%choose actual value as value found high high N (300)</span>
+N = 300;
+[x, y] = NACA_Airfoils(m,p,t,c,N);
+[c_l_actual, cp_actual, X, Y] = Vortex_Panel(x,y,V_inf,0,0);
+
+<span class="comment">%calculate error as panels increase</span>
+N = 2:150;
+<span class="keyword">for</span> i = 1:length(N)
+    [x, y] = NACA_Airfoils(m,p,t,c,N(i));
+    [c_l, cp, X, Y] = Vortex_Panel(x,y,V_inf,0,0);
+    error(i) = abs((mean(cp_actual) - mean(cp))/mean(cp_actual))*100;
+<span class="keyword">end</span>
+
+<span class="comment">%plot percent error of average cp vs number of panels</span>
+figure(2)
+plot(N, error);
+title(<span class="string">'Error vs Number of Panels'</span>);
+yline(5, <span class="string">'--r'</span>);
+xlabel(<span class="string">'Number of Panels, N'</span>);
+ylabel(<span class="string">'Percent Error in average cp, %'</span>);
+legend(<span class="string">'error'</span>, <span class="string">'5% error'</span>);
+grid <span class="string">on</span>
+
+<span class="comment">%find number of panels when error is &lt;= 5%</span>
+min_N = N(find(error &lt;= 5,1));
+fprintf(<span class="string">"Using %d Panels...\n"</span>,min_N);
+
+<span class="comment">%verify NACA airfoil generator works</span>
+[x, y] = NACA_Airfoils(m,p,t,c,min_N);
+figure(3)
+plot(x, y);
+ylim([-0.2 0.2])
+xlabel(<span class="string">'x/c'</span>);
+ylabel(<span class="string">'y/c'</span>);
+title(<span class="string">'NACA 0012 Airfoil'</span>);
+
+<span class="comment">%loop through various alphas to find cl and cp</span>
+alphas = [-5, 0, 5, 10];
+<span class="keyword">for</span> i = 1:length(alphas);
+    [c_l(i), CP, X, Y] = Vortex_Panel(x,y,V_inf,alphas(i),0);
+    figure(4)
+    <span class="comment">%plot cp vs x/c for each alpha on one plot</span>
+     c = max(X) - min(X);
+    x = X(1:length(X)-1); <span class="comment">%upper surface</span>
+    x_c = x./c;
+    <span class="comment">%invert the CP order for plot</span>
+    CP = CP(1:length(CP)-1); <span class="comment">%upper surface</span>
+    plot(x,CP);
+    set(gca, <span class="string">'YDir'</span>,<span class="string">'reverse'</span>)
+    grid <span class="string">on</span>
+    title(<span class="string">'Coefficient of Pressure vs percent chord'</span>);
+    xlabel(<span class="string">'Percent chord, x/c'</span>);
+    ylabel(<span class="string">'Cp'</span>);
+    hold <span class="string">on</span>
+    <span class="comment">%legend('Upper surface', 'Lower surface');</span>
+    cp_mean(i) = mean(CP);
+<span class="keyword">end</span>
+legend(<span class="string">'-5 degrees'</span>, <span class="string">'0 degrees'</span>, <span class="string">'5 degrees'</span>, <span class="string">'10 degrees'</span>);
+
+<span class="comment">%plot cl vs alpha and cp vs alpha at various alphas</span>
+figure(5)
+sgtitle(<span class="string">'NACA 0012'</span>);
+subplot(1, 2, 1);
+plot(alphas, c_l);
+xlabel(<span class="string">'Angle of Attack, degrees'</span>);
+ylabel(<span class="string">'Average Cl'</span>);
+title(<span class="string">'Cl vs alpha'</span>);
+grid <span class="string">on</span>
+subplot(1, 2, 2);
+plot(alphas, cp_mean);
+set(gca, <span class="string">'YDir'</span>,<span class="string">'reverse'</span>)
+xlabel(<span class="string">'Angle of Attack, degrees'</span>);
+ylabel(<span class="string">'Average cp'</span>);
+grid <span class="string">on</span>
+title(<span class="string">'Cp vs alpha'</span>);
+</pre><pre class="codeoutput">Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  2.775558e-17. 
+Using 79 Panels...
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_02.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_03.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_04.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_05.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_06.png" alt=""> <h2 id="4">Problem 3</h2><pre class="codeinput"><span class="comment">%vector of NACA names</span>
+NACA_names = [<span class="string">'0012'</span>; <span class="string">'2412'</span>; <span class="string">'4412'</span>; <span class="string">'2424'</span>];
+
+<span class="comment">%loop through each airfoil</span>
+<span class="keyword">for</span> i = 1:length(NACA_names)
+    <span class="comment">%get airfoil properties from name</span>
+    m = str2num(NACA_names(i,1))/100;
+    p = str2num(NACA_names(i,2))/10;
+    t = str2num(NACA_names(i,3:4))/100;
+
+    <span class="comment">%get cooridinates of airfoil shape</span>
+    [x, y] = NACA_Airfoils(m,p,t,c,min_N);
+
+    <span class="comment">%get cl from vortex panel method at various alphas</span>
+    <span class="comment">%loop through alphas</span>
+    alphas = -5:0.5:5;
+    <span class="keyword">for</span> j = 1:length(alphas)
+        [c_l(j), cp, X, Y] = Vortex_Panel(x,y,V_inf,alphas(j),0);
+    <span class="keyword">end</span>
+    <span class="comment">%plot cl vs alpha</span>
+    figure(5+i)
+    plot(alphas, c_l);
+    xlabel(<span class="string">'Angle of Attack, degrees'</span>);
+    ylabel(<span class="string">'Average Cl'</span>);
+    title_str = <span class="string">"Cl vs Alpha for NACA "</span> + NACA_names(i,:);
+    title(title_str);
+    grid <span class="string">on</span>
+
+    <span class="comment">%estimate lift slope</span>
+    lift_slope = (c_l(end) - c_l(1)) / alphas(end) - alphas(1);
+    fprintf(<span class="string">"----NACA %s----\n"</span>, NACA_names(i,:));
+    fprintf(<span class="string">"estimated lift slope = %s rad^-1\n"</span>, lift_slope);
+
+    <span class="comment">%estimate zero-lift angle of attack</span>
+    zero_index = find(c_l &gt;= 0, 1); <span class="comment">%index where cl is zero</span>
+    zero_l_AoA = alphas(zero_index); <span class="comment">%angle of attack</span>
+    xline(zero_l_AoA,<span class="string">'--k'</span>); <span class="comment">%add line on plot where lift = 0</span>
+    fprintf(<span class="string">"estimated zero lift AoA = %s degrees\n"</span>, zero_l_AoA);
+
+    <span class="comment">%compare with thin airfoil theory</span>
+    <span class="comment">%lift slope should be 2*pi</span>
+    lift_slope_thin = 2*pi;
+    zeroAoA_thin = calcZeroLiftAoA(m,p,t,c);
+    <span class="comment">%print and plot results</span>
+    cl_thin = lift_slope_thin.*(deg2rad(alphas)-deg2rad(zeroAoA_thin));
+    hold <span class="string">on</span>
+    plot(alphas, cl_thin);
+    xline(zeroAoA_thin,<span class="string">'--g'</span>); <span class="comment">%add line on plot where lift = 0</span>
+    legend(<span class="string">'Vortex Panel Method'</span>, <span class="string">'Zero-lift line for Vortex Panel'</span>,<span class="string">'Thin Airfoil Theory'</span>,<span class="string">'Zero-lift line for thin airfoil'</span>);
+    fprintf(<span class="string">"\t thin airfoil theory lift slope = %s rad^-1\n"</span>, lift_slope_thin);
+    fprintf(<span class="string">"\t thin airfoil theory zero lift AoA = %s degrees\n"</span>, zeroAoA_thin);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">----NACA 0012----
+estimated lift slope = 5.055344e+00 rad^-1
+estimated zero lift AoA =   degrees
+	 thin airfoil theory lift slope = 6.283185e+00 rad^-1
+	 thin airfoil theory zero lift AoA =   degrees
+----NACA 2412----
+estimated lift slope = 5.055298e+00 rad^-1
+estimated zero lift AoA = -2.000000e+00 degrees
+	 thin airfoil theory lift slope = 6.283185e+00 rad^-1
+	 thin airfoil theory zero lift AoA = -2.228169e+00 degrees
+----NACA 4412----
+estimated lift slope = 5.055160e+00 rad^-1
+estimated zero lift AoA = -4.000000e+00 degrees
+	 thin airfoil theory lift slope = 6.283185e+00 rad^-1
+	 thin airfoil theory zero lift AoA = -4.456338e+00 degrees
+----NACA 2424----
+estimated lift slope = 5.055025e+00 rad^-1
+estimated zero lift AoA = -2.000000e+00 degrees
+	 thin airfoil theory lift slope = 6.283185e+00 rad^-1
+	 thin airfoil theory zero lift AoA = -2.228169e+00 degrees
+</pre><img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_07.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_08.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_09.png" alt=""> <img vspace="5" hspace="5" src="Matlab_Main_CA3_McFarland_Margaux_10.png" alt=""> <h2 id="5">Functions Called</h2><p>The following functions were built and called as apart of this assignment.</p><pre class="language-matlab">
+<span class="keyword">function</span> [x,y] = NACA_Airfoils(m,p,t,c,N)
+<span class="comment">%NACA_Airfoils constructs panels for a given NACA airfoil</span>
+<span class="comment">%   This function returns vectors of the x and y locations of the boundary</span>
+<span class="comment">%   points. This function takes in the max camber m, the location of the</span>
+<span class="comment">%   max camber p, the thickness t, the chord length c, and N the number of</span>
+<span class="comment">%   panels employed.</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators: </span>
+<span class="comment">%   Date: 10/25/19</span>
+
+<span class="comment">%x position along chord</span>
+x_chord = 0:(2*c)/N:c;
+
+<span class="comment">%calculate thickness distribution</span>
+y_t = (t/0.2).*c.*(0.2969.*(x_chord./c).^(1/2)-0.1260.*(x_chord./c)-0.3516.*(x_chord./c).^2+0.2843.*(x_chord./c).^3-0.1036.*(x_chord./c).^4);
+
+<span class="comment">%find formula for mean camber line</span>
+<span class="keyword">if</span> x_chord &lt;= (p*c)  
+    y_c = m.*(x_chord./p^2).*(2*p - (x_chord./c));
+<span class="keyword">elseif</span> x_chord &lt;= c
+    y_c = m.*((c-x_chord)./(1-p)^2).*(1+(x_chord./c)-(2*p));
+<span class="keyword">end</span>
+
+<span class="comment">%find slope of camber line</span>
+<span class="keyword">if</span> x_chord &lt;= (p*c)  
+    dy_c = ((m/p^2).*(2*p - (x_chord./c))) + m.*(x_chord./p^2).*(2*p - (1/c));
+<span class="keyword">elseif</span> x_chord &lt;= c
+    dy_c = -(2.*m.*x_chord)./(c*(1-p)^2) + ((2*m*p)/(1-p)^2);
+<span class="keyword">end</span>
+
+<span class="comment">%anlge between camber and chord</span>
+angle = atan(dy_c);
+
+<span class="comment">%upper surface</span>
+x_u = x_chord - y_t.*sin(angle);
+y_u = y_c + y_t.*cos(angle);
+<span class="comment">%lower surface</span>
+x_l = x_chord + y_t.*sin(angle);
+y_l = y_c - y_t.*cos(angle);
+
+<span class="comment">%trim the first element so as not to repeat when combining the upper and</span>
+<span class="comment">%lower surface vectors</span>
+x_l = x_l(2:end);
+y_l = y_l(2:end);
+
+<span class="comment">%add corrdinates, starting from trailing edge</span>
+x = [flip(x_l) x_u];
+y = [flip(y_l) y_u];
+
+<span class="keyword">end</span>
+
+</pre><pre class="language-matlab">
+<span class="keyword">function</span> [c_l,c_p, X, Y] = Vortex_Panel(x,y,V_inf,alpha,print)
+<span class="comment">%NVortex_Panel approximate coefficient of lift using the Vortex Panel</span>
+<span class="comment">%Method</span>
+<span class="comment">%   This function returns the sectional coefficient of lift given a set of</span>
+<span class="comment">%   (x,y) coordinates of an airfoil, free-stream airspeed, and the angle of</span>
+<span class="comment">%   attack. Also returns the cp</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators: </span>
+<span class="comment">%   Date: 10/25/19</span>
+N =  length(x) - 1;
+<span class="comment">%number of points</span>
+MP1 = N + 1;
+<span class="comment">%convert AoA to radians</span>
+alpha = deg2rad(alpha);
+
+<span class="comment">%cooridnates of the control points and panel length S are computed</span>
+<span class="keyword">for</span> i = 1:N
+    IP1 = i + 1;
+    X(i) = 0.5*(x(i) + x(IP1));
+    Y(i) = 0.5*(y(i) + y(IP1));
+    S(i) = sqrt((x(IP1) - x(i))^2 + (y(IP1) - y(i))^2);
+    theta(i) = atan2((y(IP1) - y(i)), (x(IP1) - x(i)));
+    sine(i) = sin(theta(i));
+    cosine(i) = cos(theta(i));
+    <span class="comment">%right hand side of equation</span>
+    RHS(i) = sin(theta(i) - alpha);
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i = 1:N
+    <span class="keyword">for</span> j = 1:N
+        <span class="keyword">if</span> i == j
+            CN1(i,j) = -1;
+            CN2(i,j) = 1;
+            CT1(i,j) = 0.5*pi;
+            CT2(i,j) = 0.5*pi;
+        <span class="keyword">else</span>
+            <span class="comment">%constants</span>
+            A = -(X(i) - x(j))*cosine(j) - (Y(i) - y(j))*sine(j);
+            B = (X(i) - x(j))^2 + (Y(i) - y(j))^2;
+            C = sin(theta(i) - theta(j));
+            D = cos(theta(i) - theta(j));
+            E = (X(i) - x(j))*sine(j) - (Y(i) - y(j))*cosine(j);
+            F = log(1 + S(j)*(S(j)+2.*A)/B);
+            G = atan2(E*S(j), B+A*S(j));
+            P = (X(i)-x(j))*sin(theta(i)-2.*theta(j)) + (Y(i) - y(j))*cos(theta(i) -2.*theta(j));
+            Q = (X(i) - x(j))*cos(theta(i)-2.*theta(j)) - (Y(i) - y(j))*sin(theta(i)-2.*theta(j));
+            CN2(i,j) = D + 0.5*Q*F/S(j) - (A*C+D*E)*G/S(j);
+            CN1(i,j) = 0.5*D*F + C*G - CN2(i,j);
+            CT2(i,j) = C + 0.5*P*F/S(j) + (A*D-C*E)*G/S(j);
+            CT1(i,j) = 0.5*C*F - D*G - CT2(i,j);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%compute influence coefficients</span>
+<span class="keyword">for</span> i = 1:N
+    AN(i,1) = CN1(i,1);
+    AN(i,MP1) = CN2(i,N);
+    AT(i,1) = CT1(i,1);
+    AT(i,MP1) = CT2(i,N);
+    <span class="keyword">for</span> j = 2:N
+        AN(i, j) = CN1(i,j) + CN2(i,j-1);
+        AT(i, j) = CT1(i,j) + CT2(i,j-1);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+AN(MP1, 1) = 1;
+AN(MP1, MP1) = 1;
+<span class="keyword">for</span> j = 2:N
+    AN(MP1,j) = 0;
+<span class="keyword">end</span>
+RHS(MP1) = 0;
+
+<span class="comment">%solver for dimensionless strengths gama using Cramer's rule. Then compute</span>
+<span class="comment">%and print the dimensionless velocity and pressure coefficient at control</span>
+<span class="comment">%points</span>
+GAMA = AN\RHS';
+<span class="keyword">if</span> print <span class="comment">%only print to show Kuthe and Chow example works</span>
+    fprintf(<span class="string">"i  X(i)  Y(i)  theta(i)  S(i)  GAMA(i)  V(i)  CP(i)\n"</span>);
+    fprintf(<span class="string">"--  ----  ----  --------  ----  -------  ----  -----\n"</span>);
+<span class="keyword">end</span>
+<span class="keyword">for</span> i = 1:N
+    V(i) = cos(theta(i)-alpha);
+    <span class="keyword">for</span> j = 1:MP1
+        V(i) = V(i) + AT(i,j)*GAMA(j);
+        CP(i) = 1.0 - V(i)^2;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> print <span class="comment">%only print to show Kuthe and Chow example works</span>
+        fprintf(<span class="string">"%d  %f  %f  %f  %f  %f  %f  %f\n"</span>, i, X(i), Y(i), theta(i), S(i), GAMA(i), V(i), CP(i));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+c_p = CP;
+<span class="comment">%plot c_p only if the first problem </span>
+<span class="keyword">if</span> print
+    c = max(X) - min(X);
+    x_up = X(1:length(X)/2); <span class="comment">%upper surface</span>
+    x_c_up = x_up./c;
+    x_low = X(length(X)/2:length(X)); <span class="comment">%lower surface</span>
+    x_c_low = x_low./c;
+    <span class="comment">%invert the CP order for plot</span>
+    CP_up = CP(1:length(CP)/2); <span class="comment">%upper surface</span>
+    CP_low = CP(length(CP)/2:length(CP)); <span class="comment">%lower surface</span>
+    figure(1)
+    plot(x_up,CP_up);
+    set(gca, <span class="string">'YDir'</span>,<span class="string">'reverse'</span>)
+    hold <span class="string">on</span>
+    plot(x_low, CP_low);
+    set(gca, <span class="string">'YDir'</span>,<span class="string">'reverse'</span>)
+    grid <span class="string">on</span>
+    title(<span class="string">'Coefficient of Pressure vs percent chord'</span>);
+    xlabel(<span class="string">'Percent chord, x/c'</span>);
+    ylabel(<span class="string">'Cp'</span>);
+    grid <span class="string">on</span>
+    legend(<span class="string">'Upper surface'</span>, <span class="string">'Lower surface'</span>);
+<span class="keyword">end</span>
+<span class="comment">%calcualte  cl</span>
+
+<span class="comment">%kutta-joukowski (L = rho*V_inf*GAMA), but non-dimensionalize</span>
+c_l = 2*sum(GAMA)/V_inf; <span class="comment">%c is 1</span>
+
+<span class="keyword">end</span>
+
+</pre><pre class="language-matlab">
+<span class="keyword">function</span> [zero_l_AoA] = calcZeroLiftAoA(m,p,t,c)
+<span class="comment">%calcZeroLiftAoA calculates a zero lift angle of attack given airfoil</span>
+<span class="comment">%geometry, using thin airfoil theory</span>
+<span class="comment">%</span>
+<span class="comment">%   Author: Margaux McFarland</span>
+<span class="comment">%   Collaborators: </span>
+<span class="comment">%   Date: 11/7/19</span>
+
+sym <span class="string">theta</span>;
+<span class="comment">%transform variable</span>
+x_chord = @(theta)(c/2)*(1-cos(theta));
+
+
+zero_l_AoA_rad = -(1/pi)*integral(@(theta) func(theta).*(cos(theta) - 1), 0, pi);
+
+    <span class="keyword">function</span> dy_c = func(theta)
+        <span class="comment">%find slope of camber line</span>
+        <span class="keyword">if</span> x_chord(theta) &lt;= (p*c)  
+            dy_c = ((m/p^2)*(2*p - (x_chord(theta)/c))) + m*(x_chord(theta)/p^2)*(2*p - (1/c));
+        <span class="keyword">elseif</span> x_chord(theta) &lt;= c
+            dy_c = -(2*m*x_chord(theta))/(c*(1-p)^2) + ((2*m*p)/(1-p)^2);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="comment">%convert to degrees</span>
+zero_l_AoA = rad2deg(zero_l_AoA_rad);
+
+<span class="keyword">end</span>
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ASEN 3111 - Computational Assignment 03 - Main
+%  Flow Over Thick Airfoils
+%
+%   Author: Margaux McFarland
+%   Collaborators: 
+%   Date: 11/7/19
+
+clc;
+clear;
+close all;
+
+
+%% Problem 1
+
+%test that vortex panel method works with Kuthe/Chow data/values
+xb = [1, 0.933, 0.750, 0.500, 0.250, 0.067, 0, 0.067, 0.250, 0.500, 0.750, 0.933, 1];
+yb = [0, -0.005, -0.017, -0.033, -0.042, -0.033, 0, 0.045, 0.076, 0.072, 0.044, 0.013,0];
+c_l = Vortex_Panel(xb,yb,100,8,1);
+
+%% Problem 2
+%NACA 0012
+m = 0;
+p = 0;
+t = 12/100;
+c = 1; %m %?
+V_inf = 25; %set to 100 m/s 
+
+%choose actual value as value found high high N (300)
+N = 300;
+[x, y] = NACA_Airfoils(m,p,t,c,N);
+[c_l_actual, cp_actual, X, Y] = Vortex_Panel(x,y,V_inf,0,0);
+
+%calculate error as panels increase
+N = 2:150;
+for i = 1:length(N)
+    [x, y] = NACA_Airfoils(m,p,t,c,N(i));
+    [c_l, cp, X, Y] = Vortex_Panel(x,y,V_inf,0,0);
+    error(i) = abs((mean(cp_actual) - mean(cp))/mean(cp_actual))*100;
+end 
+
+%plot percent error of average cp vs number of panels 
+figure(2)
+plot(N, error);
+title('Error vs Number of Panels');
+yline(5, 'REPLACE_WITH_DASH_DASHr');
+xlabel('Number of Panels, N');
+ylabel('Percent Error in average cp, %');
+legend('error', '5% error');
+grid on
+
+%find number of panels when error is <= 5%
+min_N = N(find(error <= 5,1));
+fprintf("Using %d Panels...\n",min_N);
+
+%verify NACA airfoil generator works 
+[x, y] = NACA_Airfoils(m,p,t,c,min_N);
+figure(3)
+plot(x, y);
+ylim([-0.2 0.2])
+xlabel('x/c');
+ylabel('y/c');
+title('NACA 0012 Airfoil');
+
+%loop through various alphas to find cl and cp
+alphas = [-5, 0, 5, 10];
+for i = 1:length(alphas);
+    [c_l(i), CP, X, Y] = Vortex_Panel(x,y,V_inf,alphas(i),0);
+    figure(4)
+    %plot cp vs x/c for each alpha on one plot
+     c = max(X) - min(X);
+    x = X(1:length(X)-1); %upper surface
+    x_c = x./c;
+    %invert the CP order for plot
+    CP = CP(1:length(CP)-1); %upper surface
+    plot(x,CP);
+    set(gca, 'YDir','reverse')
+    grid on
+    title('Coefficient of Pressure vs percent chord');
+    xlabel('Percent chord, x/c');
+    ylabel('Cp');
+    hold on
+    %legend('Upper surface', 'Lower surface');
+    cp_mean(i) = mean(CP);
+end
+legend('-5 degrees', '0 degrees', '5 degrees', '10 degrees');
+
+%plot cl vs alpha and cp vs alpha at various alphas
+figure(5)
+sgtitle('NACA 0012');
+subplot(1, 2, 1);
+plot(alphas, c_l);
+xlabel('Angle of Attack, degrees');
+ylabel('Average Cl');
+title('Cl vs alpha');
+grid on
+subplot(1, 2, 2);
+plot(alphas, cp_mean);
+set(gca, 'YDir','reverse')
+xlabel('Angle of Attack, degrees');
+ylabel('Average cp');
+grid on
+title('Cp vs alpha');
+
+%% Problem 3
+%vector of NACA names
+NACA_names = ['0012'; '2412'; '4412'; '2424'];
+
+%loop through each airfoil
+for i = 1:length(NACA_names)
+    %get airfoil properties from name
+    m = str2num(NACA_names(i,1))/100;
+    p = str2num(NACA_names(i,2))/10;
+    t = str2num(NACA_names(i,3:4))/100;
+    
+    %get cooridinates of airfoil shape
+    [x, y] = NACA_Airfoils(m,p,t,c,min_N);
+     
+    %get cl from vortex panel method at various alphas
+    %loop through alphas
+    alphas = -5:0.5:5;
+    for j = 1:length(alphas)
+        [c_l(j), cp, X, Y] = Vortex_Panel(x,y,V_inf,alphas(j),0);
+    end
+    %plot cl vs alpha
+    figure(5+i)
+    plot(alphas, c_l);
+    xlabel('Angle of Attack, degrees');
+    ylabel('Average Cl');
+    title_str = "Cl vs Alpha for NACA " + NACA_names(i,:);
+    title(title_str);
+    grid on
+    
+    %estimate lift slope
+    lift_slope = (c_l(end) - c_l(1)) / alphas(end) - alphas(1);
+    fprintf("REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHNACA %sREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH\n", NACA_names(i,:));
+    fprintf("estimated lift slope = %s rad^-1\n", lift_slope);
+
+    %estimate zero-lift angle of attack
+    zero_index = find(c_l >= 0, 1); %index where cl is zero
+    zero_l_AoA = alphas(zero_index); %angle of attack
+    xline(zero_l_AoA,'REPLACE_WITH_DASH_DASHk'); %add line on plot where lift = 0
+    fprintf("estimated zero lift AoA = %s degrees\n", zero_l_AoA);
+    
+    %compare with thin airfoil theory
+    %lift slope should be 2*pi
+    lift_slope_thin = 2*pi;
+    zeroAoA_thin = calcZeroLiftAoA(m,p,t,c);
+    %print and plot results
+    cl_thin = lift_slope_thin.*(deg2rad(alphas)-deg2rad(zeroAoA_thin));
+    hold on 
+    plot(alphas, cl_thin);
+    xline(zeroAoA_thin,'REPLACE_WITH_DASH_DASHg'); %add line on plot where lift = 0
+    legend('Vortex Panel Method', 'Zero-lift line for Vortex Panel','Thin Airfoil Theory','Zero-lift line for thin airfoil');
+    fprintf("\t thin airfoil theory lift slope = %s rad^-1\n", lift_slope_thin);
+    fprintf("\t thin airfoil theory zero lift AoA = %s degrees\n", zeroAoA_thin);
+end
+
+
+%% Functions Called
+% The following functions were built and called as apart of this
+% assignment.
+%
+% <include>NACA_Airfoils.m</include>
+%
+%
+% <include>Vortex_Panel.m</include>
+%
+%
+% <include>calcZeroLiftAoA.m</include>
+%
+##### SOURCE END #####
+--></body></html>
